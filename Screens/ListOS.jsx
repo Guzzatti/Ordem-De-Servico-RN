@@ -1,36 +1,59 @@
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
-import { Checkbox, List } from "react-native-paper";
+import { FlatList, StyleSheet, View } from "react-native";
+import { Checkbox, List, TextInput } from "react-native-paper";
+import { Modal, Portal, Text, Button, Provider as PaperProvider } from 'react-native-paper';
+import  AddOsModal from "../Components/Modal";
+import { Icon } from 'react-native-paper'
 
 export default function ListOS() {
   const [data, setData] = useState([
     {
-      id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
+      id: 1,
       title: "First Item",
       status: false,
     },
     {
-      id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
+      id: 2,
       title: "aaaaaa",
       status: true,
     },
     {
-      id: "58694a0f-3da1-471f-bd96-145571e29d72",
+      id: 3,
       title: "Third Item",
       status: true,
     },
   ]);
+  const [id,setId] = useState(4)
 
   function updateData(id, status) {
     const updatedData = data.map((item) =>
       item.id === id ? { ...item, status: status } : item
     );
     setData(updatedData);
+    
   }
 
+  const [visible, setVisible] = useState(false);
+
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
+  const containerStyle = {backgroundColor: 'white', padding: 20};
+
+
   return (
-    <View>
+    <View style={styles.container}>
+      <Portal>
+        <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
+          <Text>ID: {id}</Text>
+          <TextInput mode="outlined"label={"title"}/>
+          <View style={{alignItems:"center"}}>
+            <Button mode='contained'>
+              Adicionar
+            </Button>
+          </View>
+        </Modal>
+      </Portal>
         <FlatList
         style={styles.listContainer}
         data={data}
@@ -51,6 +74,11 @@ export default function ListOS() {
         )}
         keyExtractor={(item) => item?.id}
       />
+      <View style={styles.buttonPos}>
+        <Button mode='contained' onPress={showModal}>
+            +
+        </Button>
+      </View>
     </View>
   );
 }
@@ -59,10 +87,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
     justifyContent: "center",
   },
   listContainer: {
     marginHorizontal: 10,
   },
+  buttonPos:{
+    position:"absolute",
+    bottom:10,right:10,
+  }
 });

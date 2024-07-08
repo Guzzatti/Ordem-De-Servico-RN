@@ -38,12 +38,14 @@ export default function Login({navigation}){
                 style={styles.input}
             />
             {error ? <Text style={styles.error}>{error}</Text>: null}
-            <Button mode="contained" onPress={handleLogin} style={styles.button}>
-                Login
-            </Button>
-            <Button mode="text" onPress={handleForget} style={styles.button}>
-                Esqueci Minha Senha
-            </Button>
+            <View style={styles.buttonContainer}>
+                <Button mode="contained" onPress={handleLogin} style={styles.button}>
+                    Login
+                </Button>
+                <Button mode="text" onPress={handleForget} style={styles.button}>
+                    Esqueci Minha Senha
+                </Button>
+            </View>
         </View>
     )
 }
@@ -58,10 +60,11 @@ const styles = StyleSheet.create({
         marginBottom:20,
         textAlign:"center"
     },
+    buttonContainer:{
+        alignItems:"center"
+    },
     button:{
         marginTop:10,
-        alignItems:"center",
-        justifyContent:"center"
     },
     input:{
         marginBottom:10
