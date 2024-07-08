@@ -4,12 +4,11 @@ import { Button } from "react-native-paper";
 
 export default function Home({navigation}){
     function handleLogin(){
-        navigation.navigate("ListOS")
-       
+        navigation.navigate("ListOS")  
     }
     return (
         <View>
-            <Button mode="contained" onPress={ handleLogin}>
+            <Button mode="contained" onPress={handleLogin}>
                 Lista OS
             </Button>
         </View>
