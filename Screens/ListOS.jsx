@@ -22,12 +22,12 @@ export default function ListOS() {
     {
       id: 2,
       title: "aaaaaa",
-      status: true,
+      status: false,
     },
     {
       id: 3,
       title: "Third Item",
-      status: true,
+      status: false,
     },
   ]);
   const [id, setId] = useState(4);
@@ -121,9 +121,6 @@ export default function ListOS() {
             left={(props) => (
               <Checkbox
                 status={item.status ? "checked" : "unchecked"}
-                onPress={() => {
-                  updateData(item.id, !item.status);
-                }}
               />
             )}
           />
