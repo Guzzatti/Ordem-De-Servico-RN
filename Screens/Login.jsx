@@ -21,6 +21,9 @@ export default function Login({ navigation }) {
       });
   }
 
+  function handleCreateUser(){
+    navigation.navigate("CreateUser") 
+  }
   function handleForget() {
     // Implementar função de recuperação de senha
   }
@@ -30,6 +33,7 @@ export default function Login({ navigation }) {
       <Text style={styles.title}>Login</Text>
       <TextInput
         label={"Email"}
+        mode="outlined"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
@@ -38,6 +42,7 @@ export default function Login({ navigation }) {
       />
       <TextInput
         label={"Senha"}
+        mode="outlined"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
@@ -48,9 +53,14 @@ export default function Login({ navigation }) {
         <Button mode="contained" onPress={handleLogin} style={styles.button}>
           Login
         </Button>
-        <Button mode="text" onPress={handleForget} style={styles.button}>
-          Esqueci Minha Senha
-        </Button>
+        <View style={styles.clientContainer}>
+          <Button mode="text" style={styles.button} onPress={handleCreateUser}>
+            Criar Conta
+          </Button>
+          <Button mode="text" onPress={handleForget} style={styles.button}>
+            Esqueci Minha Senha
+          </Button>
+        </View>
       </View>
     </View>
   );
@@ -81,5 +91,10 @@ const styles = StyleSheet.create({
     color: "red",
     marginBottom: 10,
     textAlign: "center"
+  },
+  clientContainer:{
+    flexDirection:"row",
+    alignItems:"center",
+    justifyContent:"center"
   }
 });

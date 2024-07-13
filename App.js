@@ -6,6 +6,7 @@ import NewTask from "./Screens/NewTask"
 import ListOS from "./Screens/ListOS";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
+import CreateUser from "./Screens/CreateUser";
 
 export default function App() {
   const Stack = createStackNavigator();
@@ -17,6 +18,7 @@ export default function App() {
           <Stack.Screen name="NewTask" component={NewTask}/>
           <Stack.Screen name="Login" component={Login}/>
           <Stack.Screen name="ListOS" component={ListOS}/>
+          <Stack.Screen name="CreateUser" component={CreateUser}/>
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
