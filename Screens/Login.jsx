@@ -1,38 +1,42 @@
-// Login.jsx
-import { useState } from "react";
-import { View, Text } from "react-native";
-import { Button, TextInput } from "react-native-paper";
-import { StyleSheet } from "react-native";
-import { auth } from "../firebaseConfig"; // Importar configuração Firebase
+import React, { useState } from 'react';
+import { View, Text } from 'react-native';
+import { Button, TextInput, Portal, Modal } from 'react-native-paper';
+import { StyleSheet } from 'react-native';
+import { auth } from '../firebaseConfig'; // Importa configuração Firebase
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import ForgetPasswordModal from './ForgetPasswordModal'; // Importa o componente do modal
 
 export default function Login({ navigation }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [visible, setVisible] = useState(false); // Estado para controlar a visibilidade do modal
 
   function handleLogin() {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        navigation.navigate("Home");
+        navigation.navigate('Home');
       })
       .catch((error) => {
-        setError("Senha ou Email inválidos");
+        setError('Senha ou Email inválidos');
       });
   }
 
-  function handleCreateUser(){
-    navigation.navigate("CreateUser") 
+  function handleCreateUser() {
+    navigation.navigate('CreateUser');
   }
+
   function handleForget() {
-    // Implementar função de recuperação de senha
+    setVisible(true); // Mostra o modal quando o botão "Esqueci Minha Senha" é pressionado
   }
+
+  const hideModal = () => setVisible(false);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
       <TextInput
-        label={"Email"}
+        label={'Email'}
         mode="outlined"
         value={email}
         onChangeText={setEmail}
@@ -41,7 +45,7 @@ export default function Login({ navigation }) {
         style={styles.input}
       />
       <TextInput
-        label={"Senha"}
+        label={'Senha'}
         mode="outlined"
         value={password}
         onChangeText={setPassword}
@@ -62,6 +66,15 @@ export default function Login({ navigation }) {
           </Button>
         </View>
       </View>
+
+      <ForgetPasswordModal
+        visible={visible}
+        hideModal={hideModal}
+        setEmail={setEmail}
+        email={email}
+        auth={auth} // Passa o objeto auth para o modal
+      />
+      
     </View>
   );
 }
@@ -69,32 +82,32 @@ export default function Login({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    justifyContent: "center",
-    padding: 24
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    padding: 24,
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
-    textAlign: "center"
+    textAlign: 'center',
   },
   buttonContainer: {
-    alignItems: "center"
+    alignItems: 'center',
   },
   button: {
     marginTop: 10,
   },
   input: {
-    marginBottom: 10
+    marginBottom: 10,
   },
   error: {
-    color: "red",
+    color: 'red',
     marginBottom: 10,
-    textAlign: "center"
+    textAlign: 'center',
   },
-  clientContainer:{
-    flexDirection:"row",
-    alignItems:"center",
-    justifyContent:"center"
-  }
+  clientContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });

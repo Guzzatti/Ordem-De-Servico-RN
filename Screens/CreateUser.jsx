@@ -21,7 +21,7 @@ export default function CreateUser({navigation}){
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          alert("email ou senha incorretos")
+          alert(errorMessage)
         });
     }
 
