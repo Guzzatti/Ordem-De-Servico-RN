@@ -3,14 +3,12 @@ import { FlatList, StyleSheet, View } from "react-native";
 import {
   Checkbox,
   List,
-  TextInput,
   Button,
-  Modal,
   Portal,
-  Text,
   Provider as PaperProvider,
   Icon,
 } from "react-native-paper";
+import NewTask from "./NewTask";
 
 export default function ListOS() {
   const [data, setData] = useState([
@@ -35,8 +33,6 @@ export default function ListOS() {
   const [visible, setVisible] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
 
-  const containerStyle = { backgroundColor: "white", padding: 20 };
-
   function updateData(id, status) {
     const updatedData = data.map((item) =>
       item.id === id ? { ...item, status: status } : item
@@ -53,21 +49,23 @@ export default function ListOS() {
     };
     setData([...data, newOb]);
     setTitle("");
-    hideModal(); // Chamada para fechar o modal após adicionar um item
+    hideModal();
   }
-
   function deleteSelectedItems() {
     const newData = data.filter((item) => !selectedItems.includes(item.id));
     setData(newData);
     setSelectedItems([]);
   }
 
-  const hideModal = () => setVisible(false); // Função para fechar o modal
+  const hideModal = () => {
+    setVisible(false)
+    setTitle("")
+  };
 
   const renderDeleteButton = () => {
     if (selectedItems.length > 0) {
       return (
-        <View style={{alignItems:"flex-start",position:'absolute',bottom:10,left:10}}>
+        <View style={{ alignItems: "flex-start", position: "absolute", bottom: 10, left: 10 }}>
           <Button mode="contained" onPress={deleteSelectedItems}>
             <Icon source={"delete"} size={24} color="white"></Icon>
           </Button>
@@ -79,26 +77,14 @@ export default function ListOS() {
 
   return (
     <View style={styles.container}>
-      <Portal>
-        <Modal
-          visible={visible}
-          onDismiss={hideModal}
-          contentContainerStyle={containerStyle}
-        >
-          <Text>ID: {id}</Text>
-          <TextInput
-            label="Title"
-            mode="outlined"
-            value={title}
-            onChangeText={(title) => setTitle(title)}
-          />
-          <View style={{ alignItems: "center" }}>
-            <Button mode="contained" onPress={() => addItem(id, title, false)}>
-              Adicionar
-            </Button>
-          </View>
-        </Modal>
-      </Portal>
+      <NewTask
+        visible={visible}
+        hideModal={hideModal}
+        id={id}
+        title={title}
+        setTitle={setTitle}
+        addItem={addItem}
+      />
       <FlatList
         style={styles.listContainer}
         data={data}
@@ -108,20 +94,18 @@ export default function ListOS() {
             description="Item description"
             onPress={() => {
               if (selectedItems.includes(item.id)) {
-                updateData(item.id, !item.status)
+                updateData(item.id, !item.status);
                 const newSelectedItems = selectedItems.filter(
                   (selectedId) => selectedId !== item.id
                 );
                 setSelectedItems(newSelectedItems);
               } else {
-                updateData(item.id, !item.status)
+                updateData(item.id, !item.status);
                 setSelectedItems([...selectedItems, item.id]);
               }
             }}
             left={(props) => (
-              <Checkbox
-                status={item.status ? "checked" : "unchecked"}
-              />
+              <Checkbox status={item.status ? "checked" : "unchecked"} />
             )}
           />
         )}
@@ -130,7 +114,7 @@ export default function ListOS() {
       {renderDeleteButton()}
       <View style={styles.buttonPos}>
         <Button mode="contained" onPress={() => setVisible(true)}>
-        <Icon source={"plus"} size={24} color="white"></Icon>
+          <Icon source={"plus"} size={24} color="white"></Icon>
         </Button>
       </View>
     </View>

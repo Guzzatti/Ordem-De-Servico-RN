@@ -1,25 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
-import { Button, TextInput, Portal, Modal } from 'react-native-paper';
+import { Button, TextInput } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
-import { auth } from '../firebaseConfig'; // Importa configuração Firebase
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import ForgetPasswordModal from './ForgetPasswordModal'; // Importa o componente do modal
+import { auth } from '../firebaseConfig'; 
+import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import ForgetPasswordModal from './ForgetPasswordModal'; 
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [visible, setVisible] = useState(false); // Estado para controlar a visibilidade do modal
+  const [visible, setVisible] = useState(false); 
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        alert("Entrando");
+        navigation.navigate("Home");
+      } else {
+        navigation.navigate("Login");
+      }
+    });
+    return () => unsubscribe();
+  },[]);
 
   function handleLogin() {
+    setLoading(true);
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         navigation.navigate('Home');
+        setEmail("")
+        setPassword("")
       })
       .catch((error) => {
         setError('Senha ou Email inválidos');
-      });
+      }).finally(() => setLoading(false));
   }
 
   function handleCreateUser() {
@@ -27,7 +43,7 @@ export default function Login({ navigation }) {
   }
 
   function handleForget() {
-    setVisible(true); // Mostra o modal quando o botão "Esqueci Minha Senha" é pressionado
+    setVisible(true); 
   }
 
   const hideModal = () => setVisible(false);
@@ -54,7 +70,13 @@ export default function Login({ navigation }) {
       />
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <View style={styles.buttonContainer}>
-        <Button mode="contained" onPress={handleLogin} style={styles.button}>
+        <Button 
+          mode="contained" 
+          onPress={handleLogin} 
+          style={styles.button} 
+          disabled={loading}
+          loading={loading}
+        >
           Login
         </Button>
         <View style={styles.clientContainer}>
@@ -72,9 +94,8 @@ export default function Login({ navigation }) {
         hideModal={hideModal}
         setEmail={setEmail}
         email={email}
-        auth={auth} // Passa o objeto auth para o modal
-      />
-      
+        auth={auth} 
+      />      
     </View>
   );
 }
