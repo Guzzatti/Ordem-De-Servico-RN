@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { TextInput, Button, Text } from "react-native-paper";
-import { firestore } from "../firebaseConfig"; // Importa o Firestore
+import { db } from "../firebaseConfig"; // Importa o Firestore
+import { collection, addDoc } from "firebase/firestore"; 
 
 export default function CreateClient({ navigation }) {
   const [name, setName] = useState("");
@@ -10,23 +11,18 @@ export default function CreateClient({ navigation }) {
   const [loading, setLoading] = useState(false);
 
   const handleSave = async () => {
+    setLoading(true);
     if (name && cpf && phone) {
-      setLoading(true);
-      try {
-        await firestore.collection("clients").add({
-          name,
-          cpf,
-          phone,
-          createdAt: new Date(),
-        });
-        alert("Cliente criado com sucesso!");
-        navigation.goBack(); // Voltar para a tela anterior após salvar
-      } catch (error) {
-        console.error("Erro ao criar cliente: ", error);
-        alert("Erro ao criar cliente. Tente novamente.");
-      } finally {
+      const docRef = await addDoc(collection(db, "clients"), {
+        name: name,
+        cpf: cpf,
+        phone: phone,
+        createdAt: new Date(),
+      }).finally(() => {
         setLoading(false);
-      }
+        alert("Cliente salvo com sucesso.");
+        navigation.navigate("Home");
+      });
     } else {
       alert("Preencha todos os campos.");
     }

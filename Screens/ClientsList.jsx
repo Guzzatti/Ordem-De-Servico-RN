@@ -1,29 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, FlatList, Text } from "react-native";
 import { Button } from "react-native-paper";
-import { firestore } from "../firebaseConfig"; // Importa o Firestore
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebaseConfig";
 
-export default function ClientsList({ navigation, route }) {
+export default function ClientsList({navigation}) {
   const [clients, setClients] = useState([]);
   
+  const fetchClients = async () => {
+
+    let tempClients = [];
+
+    const querySnapshot = await getDocs(collection(db, "clients"));
+    querySnapshot.forEach((doc) => { 
+      tempClients.push({ id: doc.id, ...doc.data() });
+    });
+
+    setClients(tempClients);
+  };
+
   useEffect(() => {
-    const fetchClients = async () => {
-      try {
-        const clientsCollection = await firestore.collection("clients").get();
-        const clientList = clientsCollection.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setClients(clientList);
-      } catch (error) {
-        console.error("Erro ao carregar clientes: ", error);
-      }
-    };
-
     fetchClients();
-  }, []);
+  },[]);
 
-  const handleSelectClient = (client) => {
-    // Passa o cliente selecionado de volta para a tela anterior
-    route.params.setSelectedClient(client);
-    navigation.goBack();
+  const handleSelectClient = () => {
+    alert("em produção");
   };
 
   return (
@@ -33,7 +34,7 @@ export default function ClientsList({ navigation, route }) {
         renderItem={({ item }) => (
           <View style={styles.clientContainer}>
             <Text style={styles.clientName}>{item.name}</Text>
-            <Button mode="contained" onPress={() => handleSelectClient(item)}>
+            <Button mode="contained" onPress={() => handleSelectClient()}>
               Selecionar
             </Button>
           </View>

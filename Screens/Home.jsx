@@ -63,8 +63,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff",
         padding: 24,
-        flexDirection: "row",
-        alignItems: "flex-start",
-        justifyContent: "space-evenly",
+        flexDirection: "column",
+        gap:20,
     },
 });

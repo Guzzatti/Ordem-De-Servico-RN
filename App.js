@@ -22,7 +22,7 @@ export default function App() {
           <Stack.Screen name="ListOS" component={ListOS} />
           <Stack.Screen name="CreateUser" component={CreateUser} />
           <Stack.Screen name="ClientsList" component={ClientsList} />
-          <Stack.Screen name="CreateClient" component={CreateClient} /> {/* Adicione a nova tela */}
+          <Stack.Screen name="CreateClient" component={CreateClient} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
