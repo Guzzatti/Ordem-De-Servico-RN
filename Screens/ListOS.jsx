@@ -1,78 +1,64 @@
 import React, { useState } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
-import {
-  Checkbox,
-  List,
-  Button,
-  Portal,
-  Provider as PaperProvider,
-  Icon,
-} from "react-native-paper";
+import { FlatList, StyleSheet, View,Text } from "react-native";
+import { List,Button, Provider as PaperProvider,Icon} from "react-native-paper";
+import {  Divider } from "react-native-paper";
 import NewTask from "./NewTask";
 
 export default function ListOS() {
   const [data, setData] = useState([
     {
       id: 1,
-      title: "First Item",
-      status: false,
+      titleOs: "Trocar a rebimboca da parafuseta",
+      description: "",
+      client: "Joãozinho da Silva",
+      createdAt: new Date(),
     },
     {
       id: 2,
-      title: "aaaaaa",
-      status: false,
+      titleOs: "Second Item",
+      description: "Item description",
+      client: "Zé das Couves",
+      createdAt: new Date(),
     },
     {
       id: 3,
-      title: "Third Item",
-      status: false,
+      titleOs: "Third Item",
+      description: "Item description",
+      client: "Rogerinho do Ingá",
+      createdAt: new Date(),
     },
+    
   ]);
   const [id, setId] = useState(4);
   const [title, setTitle] = useState("");
   const [visible, setVisible] = useState(false);
-  const [selectedItems, setSelectedItems] = useState([]);
 
-  function updateData(id, status) {
-    const updatedData = data.map((item) =>
-      item.id === id ? { ...item, status: status } : item
-    );
-    setData(updatedData);
-  }
 
   function addItem(a, b, c) {
-    setId(id + 1);
+    const today = new Date();
+
+    setId(prevId => prevId + 1);
+
     const newOb = {
-      id: a,
-      title: b,
-      status: c,
+        id: id, 
+        client: a,
+        titleOs: b,
+        description: c,
+        createdAt: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
     };
-    setData([...data, newOb]);
-    setTitle("");
+    setData(prevData => [...prevData, newOb]);
     hideModal();
-  }
-  function deleteSelectedItems() {
-    const newData = data.filter((item) => !selectedItems.includes(item.id));
-    setData(newData);
-    setSelectedItems([]);
-  }
+};
 
   const hideModal = () => {
     setVisible(false)
-    setTitle("")
   };
-
-  const renderDeleteButton = () => {
-    if (selectedItems.length > 0) {
-      return (
-        <View style={{ alignItems: "flex-start", position: "absolute", bottom: 10, left: 10 }}>
-          <Button mode="contained" onPress={deleteSelectedItems}>
-            <Icon source={"delete"} size={24} color="white"></Icon>
-          </Button>
-        </View>
-      );
-    }
-    return null;
+  const formatDate = (date) => {
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
   };
 
   return (
@@ -80,38 +66,33 @@ export default function ListOS() {
       <NewTask
         visible={visible}
         hideModal={hideModal}
-        id={id}
-        title={title}
         setTitle={setTitle}
         addItem={addItem}
       />
-      <FlatList
-        style={styles.listContainer}
-        data={data}
-        renderItem={({ item }) => (
-          <List.Item
-            title={item.title}
-            description="Item description"
-            onPress={() => {
-              if (selectedItems.includes(item.id)) {
-                updateData(item.id, !item.status);
-                const newSelectedItems = selectedItems.filter(
-                  (selectedId) => selectedId !== item.id
-                );
-                setSelectedItems(newSelectedItems);
-              } else {
-                updateData(item.id, !item.status);
-                setSelectedItems([...selectedItems, item.id]);
-              }
-            }}
-            left={(props) => (
-              <Checkbox status={item.status ? "checked" : "unchecked"} />
-            )}
-          />
-        )}
-        keyExtractor={(item) => item.id.toString()}
-      />
-      {renderDeleteButton()}
+       <FlatList
+          style={styles.listContainer}
+          data={data}
+          renderItem={({ item }) => (
+            <View>
+              <List.Item
+                title={item.titleOs}
+                description={
+                  <View>
+                    <Text style={styles.descriptionText}>{item.client || "Cliente não disponível"}</Text>
+                    <Text style={styles.dateText}>
+                      {item.createdAt ? formatDate(item.createdAt) : "Data não disponível"}
+                    </Text>
+                  </View>
+                }
+                onPress={() => console.log(item)}
+                left={props => <List.Icon {...props} icon="archive" />} 
+                style={styles.listItem}
+              />
+              <Divider />
+            </View>
+          )}
+          keyExtractor={item => item.id.toString()}
+        />
       <View style={styles.buttonPos}>
         <Button mode="contained" onPress={() => setVisible(true)}>
           <Icon source={"plus"} size={24} color="white"></Icon>
@@ -128,11 +109,29 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   listContainer: {
-    marginHorizontal: 10,
+    padding: 10,
   },
   buttonPos: {
     position: "absolute",
     bottom: 10,
     right: 10,
+  },
+  listContainer: {
+    flex: 1,
+    backgroundColor: "#f9f9f9",
+  },
+  listItem: {
+    backgroundColor: "#fff",
+    marginVertical: 4,
+    borderRadius: 8,
+    elevation: 2,
+  },
+  descriptionText: {
+    fontSize: 14,
+    color: "#333",
+  },
+  dateText: {
+    fontSize: 12,
+    color: "#888",
   },
 });

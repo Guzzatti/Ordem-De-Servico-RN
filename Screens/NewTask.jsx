@@ -1,7 +1,6 @@
-// NewTask.jsx
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Modal, Portal, Text, TextInput, Button, Menu, Divider } from 'react-native-paper';
+import { Modal, Portal, Text, TextInput, Button, Menu} from 'react-native-paper';
 import { db } from '../firebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
 
@@ -13,14 +12,22 @@ export default function NewTask({ visible, hideModal, addItem }) {
   const [loading, setLoading] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
 
+  const fetchClients = async () => {
+
+  let tempClients = [];
+
+  const querySnapshot = await getDocs(collection(db, "clients"));
+    querySnapshot.forEach((doc) => { 
+      tempClients.push({ id: doc.id, ...doc.data() });
+    });
+
+    setClients(tempClients);
+  };
+
   useEffect(() => {
-    const fetchClients = async () => {
-      const querySnapshot = await getDocs(collection(db, 'clients'));
-      const clientsList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setClients(clientsList);
-    };
     fetchClients();
-  }, []);
+  },[]);
+
 
   const handleAddItem = () => {
     addItem(selectedClient, osName, osDescription);
@@ -30,6 +37,18 @@ export default function NewTask({ visible, hideModal, addItem }) {
     hideModal();
   };
 
+  const handleSelectClient = clients.map(client => (
+    <Menu.Item
+      key={client.id}
+      onPress={() => {
+        setSelectedClient(client.name);
+        setMenuVisible(false);
+      }}
+      title={client.name}
+    />
+  ))
+
+  
   return (
     <Portal>
       <Modal
@@ -43,20 +62,11 @@ export default function NewTask({ visible, hideModal, addItem }) {
           onDismiss={() => setMenuVisible(false)}
           anchor={
             <Button onPress={() => setMenuVisible(true)}>
-              {selectedClient ? selectedClient.name : 'Selecionar Cliente'}
+              {selectedClient === null ? 'Selecione um cliente' : selectedClient}
             </Button>
           }
         >
-          {clients.map(client => (
-            <Menu.Item
-              key={client.id}
-              onPress={() => {
-                setSelectedClient(client);
-                setMenuVisible(false);
-              }}
-              title={client.name}
-            />
-          ))}
+          {handleSelectClient}
         </Menu>
         <TextInput
           label="Nome da OS"
