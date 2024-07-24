@@ -1,13 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, Portal, TextInput, Button, Text } from 'react-native-paper';
-import { View, StyleSheet } from 'react-native';
-import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
-import { db } from '../firebaseConfig';
+import React, { useState, useEffect } from "react";
+import { Modal, Portal, TextInput, Button, Text } from "react-native-paper";
+import { View, StyleSheet } from "react-native";
+import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
+import { db } from "../firebaseConfig";
 
-export default function OSMODAL({ visible, hideModal, osToEdit, setOsToEdit, clients, fetchData }) {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [client, setClient] = useState('');
+export default function OSMODAL({
+  visible,
+  hideModal,
+  osToEdit,
+  setOsToEdit,
+  clients,
+  fetchData,
+}) {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [client, setClient] = useState("");
 
   useEffect(() => {
     if (osToEdit) {
@@ -44,9 +51,15 @@ export default function OSMODAL({ visible, hideModal, osToEdit, setOsToEdit, cli
 
   return (
     <Portal>
-      <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modal}>
+      <Modal
+        visible={visible}
+        onDismiss={hideModal}
+        contentContainerStyle={styles.modal}
+      >
         <View>
-          <Text style={styles.title}>{osToEdit ? "Editar OS" : "Criar OS"}</Text>
+          <Text style={styles.title}>
+            {osToEdit ? "Editar OS" : "Criar OS"}
+          </Text>
           <TextInput
             label="Título"
             mode="outlined"
@@ -69,11 +82,7 @@ export default function OSMODAL({ visible, hideModal, osToEdit, setOsToEdit, cli
             style={styles.input}
           />
           <View style={styles.buttonContainer}>
-            <Button
-              mode="contained"
-              onPress={handleSave}
-              style={styles.button}
-            >
+            <Button mode="contained" onPress={handleSave} style={styles.button}>
               {osToEdit ? "Atualizar" : "Criar"}
             </Button>
           </View>
@@ -85,12 +94,12 @@ export default function OSMODAL({ visible, hideModal, osToEdit, setOsToEdit, cli
 
 const styles = StyleSheet.create({
   modal: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 20,
     margin: 10,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: 'gray',
+    borderColor: "gray",
   },
   title: {
     fontSize: 18,
@@ -103,6 +112,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   buttonContainer: {
-    alignItems: 'center',
+    alignItems: "center",
   },
 });

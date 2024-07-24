@@ -4,15 +4,14 @@ import { Button } from "react-native-paper";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 
-export default function ClientsList({navigation}) {
+export default function ClientsList({ navigation }) {
   const [clients, setClients] = useState([]);
-  
-  const fetchClients = async () => {
 
+  const fetchClients = async () => {
     let tempClients = [];
 
     const querySnapshot = await getDocs(collection(db, "clients"));
-    querySnapshot.forEach((doc) => { 
+    querySnapshot.forEach((doc) => {
       tempClients.push({ id: doc.id, ...doc.data() });
     });
 
@@ -21,7 +20,7 @@ export default function ClientsList({navigation}) {
 
   useEffect(() => {
     fetchClients();
-  },[]);
+  }, []);
 
   const handleSelectClient = () => {
     alert("em produção");

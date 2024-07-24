@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { TextInput, Button, Text } from "react-native-paper";
 import { db } from "../firebaseConfig"; // Importa o Firestore
-import { collection, addDoc } from "firebase/firestore"; 
+import { collection, addDoc } from "firebase/firestore";
 
 export default function CreateClient({ navigation }) {
   const [name, setName] = useState("");

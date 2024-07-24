@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text } from 'react-native';
-import { Button, TextInput } from 'react-native-paper';
-import { StyleSheet } from 'react-native';
-import { auth } from '../firebaseConfig'; 
-import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
-import ForgetPasswordModal from './ForgetPasswordModal'; 
+import React, { useState, useEffect } from "react";
+import { View, Text } from "react-native";
+import { Button, TextInput } from "react-native-paper";
+import { StyleSheet } from "react-native";
+import { auth } from "../firebaseConfig";
+import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import ForgetPasswordModal from "./ForgetPasswordModal";
 
 export default function Login({ navigation }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [visible, setVisible] = useState(false); 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -23,27 +23,28 @@ export default function Login({ navigation }) {
       }
     });
     return () => unsubscribe();
-  },[]);
+  }, []);
 
   function handleLogin() {
     setLoading(true);
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        navigation.navigate('Home');
-        setEmail("")
-        setPassword("")
+        navigation.navigate("Home");
+        setEmail("");
+        setPassword("");
       })
       .catch((error) => {
-        setError('Senha ou Email inválidos');
-      }).finally(() => setLoading(false));
+        setError("Senha ou Email inválidos");
+      })
+      .finally(() => setLoading(false));
   }
 
   function handleCreateUser() {
-    navigation.navigate('CreateUser');
+    navigation.navigate("CreateUser");
   }
 
   function handleForget() {
-    setVisible(true); 
+    setVisible(true);
   }
 
   const hideModal = () => setVisible(false);
@@ -52,7 +53,7 @@ export default function Login({ navigation }) {
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
       <TextInput
-        label={'Email'}
+        label={"Email"}
         mode="outlined"
         value={email}
         onChangeText={setEmail}
@@ -61,7 +62,7 @@ export default function Login({ navigation }) {
         style={styles.input}
       />
       <TextInput
-        label={'Senha'}
+        label={"Senha"}
         mode="outlined"
         value={password}
         onChangeText={setPassword}
@@ -70,10 +71,10 @@ export default function Login({ navigation }) {
       />
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <View style={styles.buttonContainer}>
-        <Button 
-          mode="contained" 
-          onPress={handleLogin} 
-          style={styles.button} 
+        <Button
+          mode="contained"
+          onPress={handleLogin}
+          style={styles.button}
           disabled={loading}
           loading={loading}
         >
@@ -94,8 +95,8 @@ export default function Login({ navigation }) {
         hideModal={hideModal}
         setEmail={setEmail}
         email={email}
-        auth={auth} 
-      />      
+        auth={auth}
+      />
     </View>
   );
 }
@@ -103,17 +104,17 @@ export default function Login({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    justifyContent: "center",
     padding: 24,
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   buttonContainer: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   button: {
     marginTop: 10,
@@ -122,13 +123,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   error: {
-    color: 'red',
+    color: "red",
     marginBottom: 10,
-    textAlign: 'center',
+    textAlign: "center",
   },
   clientContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

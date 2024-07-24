@@ -68,26 +68,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     justifyContent: "center",
-    padding: 24
+    padding: 24,
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
-    textAlign: "center"
+    textAlign: "center",
   },
   buttonContainer: {
-    alignItems: "center"
+    alignItems: "center",
   },
   button: {
     marginTop: 10,
   },
   input: {
-    marginBottom: 10
+    marginBottom: 10,
   },
   error: {
     color: "red",
     marginBottom: 10,
-    textAlign: "center"
-  }
+    textAlign: "center",
+  },
 });
-

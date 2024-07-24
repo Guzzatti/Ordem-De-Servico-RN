@@ -31,7 +31,7 @@ export default function ListOS() {
 
   const fetchClients = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "clients")); // Supondo que os clientes estão na coleção "clients"
+      const querySnapshot = await getDocs(collection(db, "clients")); 
       const clientsList = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
@@ -94,13 +94,14 @@ export default function ListOS() {
               onPress={() => showModal(item)}
               left={props => <List.Icon {...props} icon="archive" />}
               right={props => (
-                <Button
+                <View style={styles.deleteButton}>
+                  <Button
                   mode="contained"
                   onPress={() => handleDelete(item.id)}
-                  style={styles.deleteButton}
                 >
                   Deletar
                 </Button>
+                </View>
               )}
               style={styles.listItem}
             />
@@ -150,6 +151,7 @@ const styles = StyleSheet.create({
     right: 10,
   },
   deleteButton: {
-    marginRight: 10,
+    display: "flex",
+    justifyContent: "center",
   },
 });
