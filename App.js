@@ -8,7 +8,7 @@ import NewTask from "./Screens/NewTask";
 import ListOS from "./Screens/ListOS";
 import CreateUser from "./Screens/CreateUser";
 import ClientsList from "./Screens/ClientsList";
-import CreateClient from "./Screens/CreateClient"; // Importe a nova tela
+import CreateClient from "./Screens/CreateClient";
 
 export default function App() {
   const Stack = createStackNavigator();

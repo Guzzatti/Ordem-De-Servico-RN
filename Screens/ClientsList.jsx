@@ -3,6 +3,8 @@ import { View, StyleSheet, FlatList, Text } from "react-native";
 import { Button } from "react-native-paper";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebaseConfig";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { getOrganizationById, getUserById } from "../database";
 
 export default function ClientsList({ navigation }) {
   const [clients, setClients] = useState([]);
@@ -25,6 +27,9 @@ export default function ClientsList({ navigation }) {
   const handleSelectClient = () => {
     alert("em produção");
   };
+  const handleTeste = () => {
+      getUserById("CEHgnVlF3aQkVUtsYfmgYGJtL0k1")
+   }
 
   return (
     <View style={styles.container}>
@@ -40,6 +45,14 @@ export default function ClientsList({ navigation }) {
         )}
         keyExtractor={(item) => item.id.toString()}
       />
+      <View>
+        <Button
+          mode="contained"
+          onPress={() => handleTeste()}
+        >
+          Novo Cliente
+        </Button>
+      </View>
     </View>
   );
 }

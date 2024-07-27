@@ -5,6 +5,7 @@ import { StyleSheet } from "react-native";
 import { auth } from "../firebaseConfig";
 import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import ForgetPasswordModal from "./ForgetPasswordModal";
+import { getUserById } from "../database";
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
@@ -17,7 +18,8 @@ export default function Login({ navigation }) {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         alert("Entrando");
-        navigation.navigate("Home");
+        const user = getUserById();
+        navigation.navigate("Home",user);
       } else {
         navigation.navigate("Login");
       }
