@@ -3,22 +3,28 @@ import { FlatList, StyleSheet, View, Text } from "react-native";
 import { List, Button, Divider } from "react-native-paper";
 import OSMODAL from "./OSModal";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
-import { db } from '../firebaseConfig'; // Importe a configuração do Firebase
+import { db, auth } from '../firebaseConfig';
 
 export default function ListOS() {
   const [data, setData] = useState([]);
   const [osToEdit, setOsToEdit] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [clients, setClients] = useState([]); // Lista de clientes para seleção
+  const [clients, setClients] = useState([]); 
 
   useEffect(() => {
     fetchData();
-    fetchClients(); // Função para buscar clientes
+    fetchClients();
   }, []);
-
   const fetchData = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "orders"));
+      const user = auth.currentUser;
+      if (!user) {
+        throw new Error("Usuário não autenticado");
+      }
+
+      const ordersRef = collection(db, "organization", user.uid, "serviceOrders");
+      const querySnapshot = await getDocs(ordersRef);
+
       const orders = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
@@ -31,7 +37,14 @@ export default function ListOS() {
 
   const fetchClients = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "clients")); 
+      const user = auth.currentUser;
+      if (!user) {
+        throw new Error("Usuário não autenticado");
+      }
+
+      const clientsRef = collection(db, "organization", user.uid, "clients");
+      const querySnapshot = await getDocs(clientsRef);
+
       const clientsList = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
@@ -41,27 +54,35 @@ export default function ListOS() {
       console.error("Erro ao buscar clientes: ", error);
     }
   };
-
   const handleDelete = async (id) => {
     try {
-      await deleteDoc(doc(db, "orders", id));
-      fetchData(); // Atualize a lista após exclusão
+      const user = auth.currentUser;
+      if (!user) {
+        throw new Error("Usuário não autenticado");
+      }
+
+      await deleteDoc(doc(db, "organization", user.uid, "serviceOrders", id));
+      fetchData(); 
     } catch (error) {
       console.error("Erro ao deletar ordem de serviço: ", error);
     }
   };
 
+  // Função para exibir o modal
   const showModal = (os = null) => {
     setOsToEdit(os);
     setModalVisible(true);
   };
 
+  // Função para ocultar o modal
   const hideModal = () => {
     setModalVisible(false);
     setOsToEdit(null);
   };
 
+  // Função para formatar a data
   const formatDate = (date) => {
+    if (!date) return "Data não disponível";
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     return new Date(date.seconds * 1000).toLocaleDateString(undefined, options);
   };
@@ -96,11 +117,11 @@ export default function ListOS() {
               right={props => (
                 <View style={styles.deleteButton}>
                   <Button
-                  mode="contained"
-                  onPress={() => handleDelete(item.id)}
-                >
-                  Deletar
-                </Button>
+                    mode="contained"
+                    onPress={() => handleDelete(item.id)}
+                  >
+                    Deletar
+                  </Button>
                 </View>
               )}
               style={styles.listItem}

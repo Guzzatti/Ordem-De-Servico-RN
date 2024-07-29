@@ -4,6 +4,9 @@ import { Button, TextInput } from "react-native-paper";
 import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebaseConfig";
+import { db } from "../firebaseConfig";
+import { setDoc, doc } from "firebase/firestore";
+
 
 export default function CreateUser({ navigation }) {
   const [email, setEmail] = useState("");
@@ -11,20 +14,26 @@ export default function CreateUser({ navigation }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  function handleCreateUser() {
+  async function handleCreateUser() {
     setLoading(true);
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        alert("Usuario Criado Com Sucesso");
-        navigation.navigate("Home");
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        setError(errorMessage);
-      })
-      .finally(() => setLoading(false));
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      await setDoc(doc(db, 'users', user.uid), {
+        email: user.email,
+      });
+      await setDoc(doc(db, 'organization', user.uid), {
+        userId: user.uid,
+      });
+
+      alert("Usuário Criado Com Sucesso");
+      navigation.navigate("Home");
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
