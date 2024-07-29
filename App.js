@@ -1,9 +1,9 @@
 import React from 'react';
 import { StyleSheet, View, Text, Image } from 'react-native';
-import { PaperProvider } from 'react-native-paper';
-import { createStackNavigator } from '@react-navigation/stack';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { PaperProvider, Button } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createStackNavigator } from '@react-navigation/stack';
 import Home from './Screens/Home';
 import Login from './Screens/Login';
 import NewTask from './Screens/NewTask';
@@ -14,9 +14,9 @@ import CreateClient from './Screens/CreateClient';
 import theme from './theme';
 import { signOut } from 'firebase/auth';
 import { auth } from './firebaseConfig';
-import { Button } from 'react-native-paper';
 
 const Drawer = createDrawerNavigator();
+const Stack = createStackNavigator();
 
 function CustomDrawerContent(props) {
   const handleLogout = () => {
@@ -46,20 +46,40 @@ function CustomDrawerContent(props) {
   );
 }
 
+function HomeStack({ navigation }) {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen 
+        name="Home" 
+        component={Home} 
+        options={{
+          headerShown: true,
+          headerLeft: () => (
+            <Button onPress={() => navigation.openDrawer()}>
+              Menu
+            </Button>
+          ),
+        }} 
+      />
+      <Stack.Screen name="NewTask" component={NewTask} />
+      <Stack.Screen name="ListOS" component={ListOS} />
+      <Stack.Screen name="CreateUser" component={CreateUser} />
+      <Stack.Screen name="ClientsList" component={ClientsList} />
+      <Stack.Screen name="CreateClient" component={CreateClient} />
+    </Stack.Navigator>
+  );
+}
+
 function App() {
   return (
     <PaperProvider theme={theme}>
       <NavigationContainer>
         <Drawer.Navigator
-          initialRouteName='Login'
+          initialRouteName="Login"
           drawerContent={(props) => <CustomDrawerContent {...props} />}
+          screenOptions={{ headerShown: false, drawerPosition: 'right', gestureEnabled: false }}
         >
-          <Drawer.Screen name="Home" component={Home} />
-          <Drawer.Screen name="NewTask" component={NewTask} />
-          <Drawer.Screen name="ListOS" component={ListOS} />
-          <Drawer.Screen name="CreateUser" component={CreateUser} />
-          <Drawer.Screen name="ClientsList" component={ClientsList} />
-          <Drawer.Screen name="CreateClient" component={CreateClient} />
+          <Drawer.Screen name="Home" component={HomeStack} />
           <Drawer.Screen name="Login" component={Login} />
         </Drawer.Navigator>
       </NavigationContainer>
