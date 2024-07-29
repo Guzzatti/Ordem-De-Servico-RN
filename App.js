@@ -52,14 +52,6 @@ function HomeStack({ navigation }) {
       <Stack.Screen 
         name="Home" 
         component={Home} 
-        options={{
-          headerShown: true,
-          headerLeft: () => (
-            <Button onPress={() => navigation.openDrawer()}>
-              Menu
-            </Button>
-          ),
-        }} 
       />
       <Stack.Screen name="NewTask" component={NewTask} />
       <Stack.Screen name="ListOS" component={ListOS} />
@@ -79,7 +71,7 @@ function App() {
           drawerContent={(props) => <CustomDrawerContent {...props} />}
           screenOptions={{ headerShown: false, drawerPosition: 'right', gestureEnabled: false }}
         >
-          <Drawer.Screen name="Home" component={HomeStack} />
+          <Drawer.Screen name="HomeStack" component={HomeStack} />
           <Drawer.Screen name="Login" component={Login} />
         </Drawer.Navigator>
       </NavigationContainer>

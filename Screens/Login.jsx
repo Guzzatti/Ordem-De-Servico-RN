@@ -15,7 +15,7 @@ export default function Login({ navigation }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        navigation.navigate("Home");
+        navigation.navigate("HomeStack");
       }
     });
     return () => unsubscribe();
