@@ -7,6 +7,8 @@ import { useState } from "react";
 export default function Home({ navigation }) {
   const [loading, setLoading] = useState(false);
 
+  
+
   function handleListOs() {
     navigation.navigate("ListOS");
   }
@@ -19,21 +21,6 @@ export default function Home({ navigation }) {
     navigation.navigate("ClientsList");
   }
 
-  function handleLogout() {
-    setLoading(true);
-    signOut(auth)
-      .then(() => {
-        alert("Usuário desconectado");
-        navigation.navigate("Login");
-      })
-      .catch((error) => {
-        console.error("Erro ao desconectar:", error);
-        alert("Erro ao desconectar. Tente novamente.");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }
 
   return (
     <View style={styles.container}>
@@ -47,15 +34,6 @@ export default function Home({ navigation }) {
         </Button>
         <Button mode="contained" onPress={handleListClients} style={styles.button}>
           Lista de Clientes
-        </Button>
-        <Button
-          mode="contained"
-          onPress={handleLogout}
-          disabled={loading}
-          loading={loading}
-          style={[styles.button, styles.logoutButton]}
-        >
-          Sair do App
         </Button>
       </View>
     </View>
