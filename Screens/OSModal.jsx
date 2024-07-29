@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Portal, TextInput, Button, Text } from "react-native-paper";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import { collection, addDoc, updateDoc, doc, getDocs } from "firebase/firestore";
 import { db, auth } from "../firebaseConfig";
-import { Picker } from '@react-native-picker/picker'; // Atualizado
 
 export default function OSMODAL({
   visible,
@@ -17,6 +16,7 @@ export default function OSMODAL({
   const [client, setClient] = useState("");
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [clientModalVisible, setClientModalVisible] = useState(false);
 
   useEffect(() => {
     if (osToEdit) {
@@ -65,7 +65,7 @@ export default function OSMODAL({
             titleOs: title,
             description,
             client,
-            updatedAt: new Date() // Opcional: para rastrear a data da última atualização
+            updatedAt: new Date()
           });
           alert("Ordem de Serviço atualizada com sucesso.");
         } else {
@@ -88,6 +88,11 @@ export default function OSMODAL({
     } else {
       alert("Preencha todos os campos.");
     }
+  };
+
+  const selectClient = (clientId, clientName) => {
+    setClient(clientId);
+    setClientModalVisible(false);
   };
 
   return (
@@ -115,25 +120,36 @@ export default function OSMODAL({
             onChangeText={setDescription}
             style={styles.input}
           />
-          <View style={styles.pickerContainer}>
-            <Text>Cliente</Text>
-            <Picker
-              selectedValue={client}
-              onValueChange={(itemValue) => setClient(itemValue)}
-              style={styles.picker}
-            >
-              <Picker.Item label="Selecione um cliente" value="" />
-              {clients.map((client) => (
-                <Picker.Item key={client.id} label={client.name} value={client.id} />
-              ))}
-            </Picker>
-          </View>
+          <TouchableOpacity
+            style={styles.clientSelector}
+            onPress={() => setClientModalVisible(true)}
+          >
+            <Text>{client ? `Cliente: ${clients.find(c => c.id === client)?.name}` : "Selecione um cliente"}</Text>
+          </TouchableOpacity>
           <View style={styles.buttonContainer}>
             <Button mode="contained" onPress={handleSave} loading={loading} style={styles.button}>
               {osToEdit ? "Atualizar" : "Criar"}
             </Button>
           </View>
         </View>
+      </Modal>
+      <Modal
+        visible={clientModalVisible}
+        onDismiss={() => setClientModalVisible(false)}
+        contentContainerStyle={styles.clientModal}
+      >
+        <FlatList
+          data={clients}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={styles.clientItem}
+              onPress={() => selectClient(item.id, item.name)}
+            >
+              <Text>{item.name}</Text>
+            </TouchableOpacity>
+          )}
+        />
       </Modal>
     </Portal>
   );
@@ -155,17 +171,30 @@ const styles = StyleSheet.create({
   input: {
     marginBottom: 10,
   },
-  pickerContainer: {
+  clientSelector: {
     marginBottom: 10,
-  },
-  picker: {
-    height: 50,
-    width: '100%',
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 5,
   },
   button: {
     marginTop: 20,
   },
   buttonContainer: {
     alignItems: "center",
+  },
+  clientModal: {
+    backgroundColor: "white",
+    padding: 20,
+    margin: 10,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: "gray",
+  },
+  clientItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "gray",
   },
 });
