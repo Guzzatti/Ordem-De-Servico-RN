@@ -90,7 +90,7 @@ export default function OSMODAL({
     }
   };
 
-  const selectClient = (clientId, clientName) => {
+  const selectClient = (clientId) => {
     setClient(clientId);
     setClientModalVisible(false);
   };
@@ -124,7 +124,9 @@ export default function OSMODAL({
             style={styles.clientSelector}
             onPress={() => setClientModalVisible(true)}
           >
-            <Text>{client ? `Cliente: ${clients.find(c => c.id === client)?.name}` : "Selecione um cliente"}</Text>
+            <Text style={styles.clientText}>
+              {client ? `Cliente: ${clients.find(c => c.id === client)?.name}` : "Selecione um cliente"}
+            </Text>
           </TouchableOpacity>
           <View style={styles.buttonContainer}>
             <Button mode="contained" onPress={handleSave} loading={loading} style={styles.button}>
@@ -144,9 +146,9 @@ export default function OSMODAL({
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.clientItem}
-              onPress={() => selectClient(item.id, item.name)}
+              onPress={() => selectClient(item.id)}
             >
-              <Text>{item.name}</Text>
+              <Text style={styles.clientItemText}>{item.name}</Text>
             </TouchableOpacity>
           )}
         />
@@ -157,44 +159,58 @@ export default function OSMODAL({
 
 const styles = StyleSheet.create({
   modal: {
-    backgroundColor: "white",
+    backgroundColor: "#fff",
     padding: 20,
-    margin: 10,
+    margin: 20,
     borderRadius: 10,
-    borderWidth: 2,
-    borderColor: "gray",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    elevation: 5,
   },
   title: {
-    fontSize: 18,
+    fontSize: 20,
+    fontWeight: 'bold',
     marginBottom: 15,
+    color: '#333',
+    textAlign: 'center',
   },
   input: {
-    marginBottom: 10,
+    marginBottom: 15,
   },
   clientSelector: {
-    marginBottom: 10,
-    padding: 10,
+    marginBottom: 15,
+    padding: 15,
     borderWidth: 1,
-    borderColor: "gray",
+    borderColor: "#00B9D1",
     borderRadius: 5,
+    backgroundColor: '#f5f5f5',
+    justifyContent: 'center',
   },
-  button: {
-    marginTop: 20,
+  clientText: {
+    color: '#333',
   },
   buttonContainer: {
-    alignItems: "center",
+    alignItems: 'center',
+    marginTop: 15,
+  },
+  button: {
+    width: '100%',
   },
   clientModal: {
-    backgroundColor: "white",
+    backgroundColor: "#fff",
     padding: 20,
-    margin: 10,
+    margin: 20,
     borderRadius: 10,
-    borderWidth: 2,
-    borderColor: "gray",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    elevation: 5,
   },
   clientItem: {
-    padding: 10,
+    padding: 15,
     borderBottomWidth: 1,
-    borderBottomColor: "gray",
+    borderBottomColor: "#ccc",
+  },
+  clientItemText: {
+    color: '#333',
   },
 });

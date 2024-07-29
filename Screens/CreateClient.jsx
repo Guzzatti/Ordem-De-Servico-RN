@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
-import { TextInput, Button, Text } from "react-native-paper";
+import { TextInput, Button } from "react-native-paper";
 import { db } from "../firebaseConfig";
 import { collection, addDoc } from "firebase/firestore";
 import { auth } from "../firebaseConfig";
@@ -24,7 +24,7 @@ export default function CreateClient({ navigation }) {
 
     if (name && cpf && phone) {
       try {
-        const docRef = await addDoc(collection(db, "organization", user.uid, "clients"), {
+        await addDoc(collection(db, "organization", user.uid, "clients"), {
           name: name,
           cpf: cpf,
           phone: phone,
@@ -52,6 +52,7 @@ export default function CreateClient({ navigation }) {
         value={name}
         onChangeText={setName}
         style={styles.input}
+        theme={{ colors: { primary: "#00B9D1" } }}
       />
       <TextInput
         label="CPF"
@@ -60,6 +61,7 @@ export default function CreateClient({ navigation }) {
         onChangeText={setCpf}
         style={styles.input}
         keyboardType="numeric"
+        theme={{ colors: { primary: "#00B9D1" } }}
       />
       <TextInput
         label="Telefone"
@@ -68,6 +70,7 @@ export default function CreateClient({ navigation }) {
         onChangeText={setPhone}
         style={styles.input}
         keyboardType="phone-pad"
+        theme={{ colors: { primary: "#00B9D1" } }}
       />
       <Button
         mode="contained"
@@ -85,12 +88,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#fff",
+    backgroundColor: "#FFFFFF",
+    justifyContent: 'center',
   },
   input: {
-    marginBottom: 10,
+    marginBottom: 15,
+    backgroundColor: "#F5F5F5",
+    borderColor: "#E0E0E0",
   },
   button: {
     marginTop: 20,
+    backgroundColor: "#00B9D1",
+    borderRadius: 8,
   },
 });

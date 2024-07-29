@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Modal, Portal, TextInput, Button } from "react-native-paper";
-import { View, Text, StyleSheet, Alert } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { sendPasswordResetEmail } from "firebase/auth"; // Importa função de redefinição de senha do Firebase
 
 export default function ForgetPasswordModal({
@@ -36,7 +36,7 @@ export default function ForgetPasswordModal({
         contentContainerStyle={styles.modal}
       >
         <View>
-          <Text style={[styles.margin, styles.title]}>
+          <Text style={styles.title}>
             Digite seu email para recuperar sua senha:
           </Text>
           <TextInput
@@ -44,17 +44,19 @@ export default function ForgetPasswordModal({
             mode="outlined"
             value={email}
             onChangeText={setEmail}
-            style={styles.margin}
+            style={styles.input}
+            theme={{ colors: { primary: "#00B9D1" } }}
           />
           {resetError ? (
             <Text style={styles.errorMessage}>{resetError}</Text>
           ) : null}
-          <View style={[styles.margin, { alignItems: "center" }]}>
+          <View style={styles.buttonContainer}>
             <Button
               mode="contained"
               onPress={handleSendResetEmail}
               disabled={loading}
               loading={loading}
+              style={styles.button}
             >
               Enviar
             </Button>
@@ -66,24 +68,34 @@ export default function ForgetPasswordModal({
 }
 
 const styles = StyleSheet.create({
-  margin: {
-    marginTop: 15,
-  },
   title: {
     fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 15,
+    color: "#043E59",
+    textAlign: "center",
+  },
+  input: {
+    marginBottom: 15,
+    backgroundColor: "#FFFFFF",
+    borderColor: "#E0E0E0",
+    borderRadius: 8,
   },
   modal: {
-    backgroundColor: "white",
+    backgroundColor: "#FFFFFF",
     padding: 20,
-    margin: 10,
+    margin: 20,
     borderRadius: 10,
-    borderWidth: 2,
-    borderColor: "gray",
+    borderWidth: 1,
+    borderColor: "#E0E0E0",
   },
-  successMessage: {
-    marginTop: 10,
-    color: "green",
-    textAlign: "center",
+  buttonContainer: {
+    alignItems: "center",
+    marginTop: 20,
+  },
+  button: {
+    backgroundColor: "#00B9D1",
+    borderRadius: 8,
   },
   errorMessage: {
     marginTop: 10,

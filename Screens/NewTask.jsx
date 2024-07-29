@@ -65,7 +65,11 @@ export default function NewTask({ visible, hideModal, addItem }) {
           visible={menuVisible}
           onDismiss={() => setMenuVisible(false)}
           anchor={
-            <Button onPress={() => setMenuVisible(true)}>
+            <Button
+              mode="outlined"
+              onPress={() => setMenuVisible(true)}
+              style={styles.menuButton}
+            >
               {selectedClient === null
                 ? "Selecione um cliente"
                 : selectedClient}
@@ -88,12 +92,13 @@ export default function NewTask({ visible, hideModal, addItem }) {
           onChangeText={setOsDescription}
           style={styles.input}
         />
-        <View style={{ alignItems: "center" }}>
+        <View style={styles.buttonContainer}>
           <Button
             mode="contained"
             onPress={handleAddItem}
             loading={loading}
             disabled={loading || !selectedClient || !osName || !osDescription}
+            style={styles.addButton}
           >
             Adicionar
           </Button>
@@ -105,18 +110,40 @@ export default function NewTask({ visible, hideModal, addItem }) {
 
 const styles = StyleSheet.create({
   containerStyle: {
-    backgroundColor: "white",
+    backgroundColor: "#fff",
     padding: 20,
-    margin: 10,
+    margin: 20,
     borderRadius: 10,
-    borderWidth: 2,
-    borderColor: "gray",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    elevation: 5,
   },
   title: {
-    fontSize: 18,
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+    color: '#333',
+  },
+  menuButton: {
+    width: '100%',
+    justifyContent: 'center',
+    borderColor: '#00B9D1',
+    borderWidth: 1,
+    borderRadius: 5,
+    backgroundColor: '#f5f5f5',
+    paddingVertical: 5,
     marginBottom: 10,
   },
   input: {
-    marginBottom: 10,
+    marginBottom: 15,
+  },
+  buttonContainer: {
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  addButton: {
+    width: '100%',
+    paddingVertical: 5,
   },
 });

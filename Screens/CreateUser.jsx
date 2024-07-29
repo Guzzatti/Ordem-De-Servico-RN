@@ -7,7 +7,6 @@ import { auth } from "../firebaseConfig";
 import { db } from "../firebaseConfig";
 import { setDoc, doc } from "firebase/firestore";
 
-
 export default function CreateUser({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -38,23 +37,25 @@ export default function CreateUser({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Criar conta</Text>
+      <Text style={styles.title}>Criar Conta</Text>
       <TextInput
-        label={"Email"}
+        label="Email"
         mode="outlined"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
         style={styles.input}
+        theme={{ colors: { primary: "#00B9D1" } }}
       />
       <TextInput
-        label={"Senha"}
+        label="Senha"
         mode="outlined"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
         style={styles.input}
+        theme={{ colors: { primary: "#00B9D1" } }}
       />
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <View style={styles.buttonContainer}>
@@ -65,7 +66,7 @@ export default function CreateUser({ navigation }) {
           disabled={loading}
           loading={loading}
         >
-          Criar Usuario
+          Criar Usuário
         </Button>
       </View>
     </View>
@@ -75,27 +76,34 @@ export default function CreateUser({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#F5F5F5",
     justifyContent: "center",
     padding: 24,
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
+    fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
+    color: "#043E59",
+  },
+  input: {
+    marginBottom: 15,
+    backgroundColor: "#FFFFFF",
+    borderColor: "#E0E0E0",
+    borderRadius: 8,
   },
   buttonContainer: {
     alignItems: "center",
   },
   button: {
-    marginTop: 10,
-  },
-  input: {
-    marginBottom: 10,
+    marginTop: 15,
+    backgroundColor: "#00B9D1",
+    borderRadius: 8,
   },
   error: {
     color: "red",
-    marginBottom: 10,
+    marginBottom: 15,
     textAlign: "center",
   },
 });

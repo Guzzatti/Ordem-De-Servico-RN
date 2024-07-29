@@ -9,11 +9,12 @@ import ListOS from "./Screens/ListOS";
 import CreateUser from "./Screens/CreateUser";
 import ClientsList from "./Screens/ClientsList";
 import CreateClient from "./Screens/CreateClient";
+import theme from './theme';
 
 export default function App() {
   const Stack = createStackNavigator();
   return (
-    <PaperProvider>
+    <PaperProvider theme={theme}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Login">
           <Stack.Screen name="Home" component={Home} />

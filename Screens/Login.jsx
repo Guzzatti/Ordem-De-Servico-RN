@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { Button, TextInput } from "react-native-paper";
-import { StyleSheet } from "react-native";
 import { auth } from "../firebaseConfig";
 import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import ForgetPasswordModal from "./ForgetPasswordModal";
@@ -16,24 +15,21 @@ export default function Login({ navigation }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        alert("Entrando");
         navigation.navigate("Home");
-      } else {
-        navigation.navigate("Login");
       }
     });
     return () => unsubscribe();
-  }, []);
+  }, [navigation]);
 
   function handleLogin() {
     setLoading(true);
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+      .then(() => {
         navigation.navigate("Home");
         setEmail("");
         setPassword("");
       })
-      .catch((error) => {
+      .catch(() => {
         setError("Senha ou Email inválidos");
       })
       .finally(() => setLoading(false));
@@ -50,10 +46,10 @@ export default function Login({ navigation }) {
   const hideModal = () => setVisible(false);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>Bem-vindo ao Reorganizer!</Text>
       <TextInput
-        label={"Email"}
+        label="Email"
         mode="outlined"
         value={email}
         onChangeText={setEmail}
@@ -62,7 +58,7 @@ export default function Login({ navigation }) {
         style={styles.input}
       />
       <TextInput
-        label={"Senha"}
+        label="Senha"
         mode="outlined"
         value={password}
         onChangeText={setPassword}
@@ -70,26 +66,23 @@ export default function Login({ navigation }) {
         style={styles.input}
       />
       {error ? <Text style={styles.error}>{error}</Text> : null}
-      <View style={styles.buttonContainer}>
-        <Button
-          mode="contained"
-          onPress={handleLogin}
-          style={styles.button}
-          disabled={loading}
-          loading={loading}
-        >
-          Login
+      <Button
+        mode="contained"
+        onPress={handleLogin}
+        style={styles.button}
+        disabled={loading}
+        loading={loading}
+      >
+        Login
+      </Button>
+      <View style={styles.clientContainer}>
+        <Button mode="text" onPress={handleCreateUser} style={styles.textButton}>
+          Criar Conta
         </Button>
-        <View style={styles.clientContainer}>
-          <Button mode="text" style={styles.button} onPress={handleCreateUser}>
-            Criar Conta
-          </Button>
-          <Button mode="text" onPress={handleForget} style={styles.button}>
-            Esqueci Minha Senha
-          </Button>
-        </View>
+        <Button mode="text" onPress={handleForget} style={styles.textButton}>
+          Esqueci Minha Senha
+        </Button>
       </View>
-
       <ForgetPasswordModal
         visible={visible}
         hideModal={hideModal}
@@ -97,39 +90,43 @@ export default function Login({ navigation }) {
         email={email}
         auth={auth}
       />
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff",
+    flexGrow: 1,
+    backgroundColor: "#f5f5f5",
     justifyContent: "center",
     padding: 24,
   },
   title: {
-    fontSize: 24,
-    marginBottom: 20,
+    fontSize: 28,
+    fontWeight: "bold",
+    marginBottom: 24,
     textAlign: "center",
-  },
-  buttonContainer: {
-    alignItems: "center",
-  },
-  button: {
-    marginTop: 10,
+    color: "#333",
   },
   input: {
-    marginBottom: 10,
+    marginBottom: 16,
+  },
+  button: {
+    marginTop: 20,
+    backgroundColor: "#00B9D1",
   },
   error: {
-    color: "red",
-    marginBottom: 10,
+    color: "#D9534F",
+    marginBottom: 16,
     textAlign: "center",
   },
   clientContainer: {
+    marginTop: 20,
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-between",
+  },
+  textButton: {
+    marginHorizontal: 8,
+    color: "#00B9D1", // Cor do texto dos botões
   },
 });

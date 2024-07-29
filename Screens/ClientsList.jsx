@@ -4,6 +4,7 @@ import { Button, Modal, TextInput } from "react-native-paper";
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 import { db, auth } from "../firebaseConfig";
 
+
 export default function ClientsList({ navigation }) {
   const [clients, setClients] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -12,7 +13,7 @@ export default function ClientsList({ navigation }) {
   const [clientCpf, setClientCpf] = useState("");
   const [clientPhone, setClientPhone] = useState("");
 
-  const user = auth.currentUser; // Obtém o usuário autenticado
+  const user = auth.currentUser;
 
   const fetchClients = async () => {
     if (!user) {
@@ -52,7 +53,7 @@ export default function ClientsList({ navigation }) {
       const clientRef = doc(db, "organization", user.uid, "clients", selectedClient.id);
       await updateDoc(clientRef, { name: clientName, cpf: clientCpf, phone: clientPhone });
       setModalVisible(false);
-      fetchClients(); // Atualiza a lista de clientes
+      fetchClients();
       setSelectedClient(null);
     } catch (error) {
       console.error("Erro ao atualizar cliente: ", error);
@@ -64,9 +65,9 @@ export default function ClientsList({ navigation }) {
       <FlatList
         data={clients}
         renderItem={({ item }) => (
-          <View style={styles.clientContainer}>
+          <View style={styles.clientCard}>
             <Text style={styles.clientName}>{item.name}</Text>
-            <Button mode="contained" onPress={() => handleSelectClient(item)}>
+            <Button mode="contained" onPress={() => handleSelectClient(item)} style={styles.editButton}>
               Editar
             </Button>
           </View>
@@ -74,7 +75,6 @@ export default function ClientsList({ navigation }) {
         keyExtractor={(item) => item.id.toString()}
       />
 
-      {/* Modal para editar cliente */}
       <Modal
         visible={modalVisible}
         onDismiss={() => setModalVisible(false)}
@@ -87,22 +87,25 @@ export default function ClientsList({ navigation }) {
             value={clientName}
             onChangeText={setClientName}
             style={styles.input}
+            mode="outlined"
           />
           <TextInput
             label="CPF"
             value={clientCpf}
             onChangeText={setClientCpf}
             style={styles.input}
-            keyboardType="numeric" // Adiciona tipo de teclado para números
+            keyboardType="numeric"
+            mode="outlined"
           />
           <TextInput
             label="Telefone"
             value={clientPhone}
             onChangeText={setClientPhone}
             style={styles.input}
-            keyboardType="phone-pad" // Adiciona tipo de teclado para números de telefone
+            keyboardType="phone-pad"
+            mode="outlined"
           />
-          <Button mode="contained" onPress={handleSaveClient} style={styles.button}>
+          <Button mode="contained" onPress={handleSaveClient} style={styles.saveButton}>
             Salvar
           </Button>
         </View>
@@ -115,35 +118,49 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#fff",
+    backgroundColor: "#F5F5F5",
   },
-  clientContainer: {
-    marginBottom: 10,
-    padding: 10,
+  clientCard: {
+    marginBottom: 15,
+    padding: 15,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 8,
+    borderColor: "#E0E0E0",
     borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 5,
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
   },
   clientName: {
-    fontSize: 18,
-    marginBottom: 5,
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 10,
+  },
+  editButton: {
+    alignSelf: 'flex-start',
   },
   modalContainer: {
-    backgroundColor: "white",
+    backgroundColor: "#FFFFFF",
     padding: 20,
-    margin: 20,
-    borderRadius: 10,
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: "gray",
+    borderColor: "#E0E0E0",
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
   },
   modalTitle: {
     fontSize: 18,
+    fontWeight: "600",
     marginBottom: 15,
   },
   input: {
-    marginBottom: 10,
+    marginBottom: 15,
   },
-  button: {
-    marginTop: 10,
+  saveButton: {
+    marginTop: 20,
+    backgroundColor: "#00B9D1",
   },
 });
