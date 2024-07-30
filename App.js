@@ -74,7 +74,6 @@ function HomeStack({ navigation }) {
     <Stack.Navigator>
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="ListOS" component={ListOS} />
-      <Stack.Screen name="CreateUser" component={CreateUser} />
       <Stack.Screen name="ClientsList" component={ClientsList} />
       <Stack.Screen name="CreateClient" component={CreateClient} />
     </Stack.Navigator>
@@ -85,7 +84,7 @@ function App() {
   return (
     <PaperProvider theme={theme}>
       <NavigationContainer>
-        <Drawer.Navigator
+        <Drawer.Navigator initialRouteName="Login"
           drawerContent={(props) => <CustomDrawerContent {...props} />}
           screenOptions={{
             headerShown: false,
@@ -93,8 +92,9 @@ function App() {
             gestureEnabled: false,
           }}
         >
-          <Drawer.Screen name="HomeStack" component={HomeStack} />
           <Drawer.Screen name="Login" component={Login} />
+          <Drawer.Screen name="CreateUser" component={CreateUser} />
+          <Drawer.Screen name="HomeStack" component={HomeStack} />
         </Drawer.Navigator>
       </NavigationContainer>
     </PaperProvider>

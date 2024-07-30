@@ -10,8 +10,30 @@ export default function ListOS() {
   const [osToEdit, setOsToEdit] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [statusFilter, setStatusFilter] = useState("Pendente");
+  const [clients, setClients] = useState([]);
+
+  const fetchClients = async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        throw new Error("Usuário não autenticado");
+      }
+
+      const clientsRef = collection(db, "organization", user.uid, "clients");
+      const querySnapshot = await getDocs(clientsRef);
+
+      const clientsList = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setClients(clientsList);
+    } catch (error) {
+      console.error("Erro ao buscar clientes: ", error);
+    }
+  };
 
   useEffect(() => {
+    fetchClients();
     fetchData();
   }, [statusFilter]);
 
@@ -68,7 +90,8 @@ export default function ListOS() {
   };
 
   const getClientName = (clientId) => {
-    // Function to get client name
+    const client = clients.find(c => c.id === clientId);
+    return client ? client.name : "Nome não disponível";
   };
 
   return (
@@ -118,7 +141,7 @@ export default function ListOS() {
               onPress={() => showModal(item)}
               left={props => <List.Icon {...props} icon="archive" />}
               right={props => (
-                <View style={styles.buttonContainer}>
+                <View>
                   <Button
                     mode="contained"
                     onPress={() => updateStatus(item.id, item.status === "Pendente" ? "Finalizada" : "Pendente")}

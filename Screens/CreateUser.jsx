@@ -43,6 +43,9 @@ export default function CreateUser({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <View style={{height:"10%",alignItems:"flex-end"}}>
+        <Button onPress={()=>{navigation.navigate("Login")}}>voltar</Button>
+      </View>
       <Text style={styles.title}>Este é o primeiro passo para mudar o seu negócio!</Text>
       <TextInput
         mode="outlined"
@@ -96,7 +99,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F5F5F5",
-    justifyContent: "center",
     padding: 24,
     gap:20,
   },
