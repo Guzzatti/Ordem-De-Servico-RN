@@ -17,6 +17,7 @@ export default function OSMODAL({
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(false);
   const [clientModalVisible, setClientModalVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(""); // Estado para a barra de pesquisa
 
   useEffect(() => {
     if (osToEdit) {
@@ -95,6 +96,10 @@ export default function OSMODAL({
     setClientModalVisible(false);
   };
 
+  const filteredClients = clients.filter(client =>
+    client.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <Portal>
       <Modal
@@ -140,8 +145,14 @@ export default function OSMODAL({
         onDismiss={() => setClientModalVisible(false)}
         contentContainerStyle={styles.clientModal}
       >
+        <TextInput
+          placeholder="Pesquisar cliente"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          style={styles.searchInput}
+        />
         <FlatList
-          data={clients}
+          data={filteredClients}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity
@@ -204,6 +215,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
     elevation: 5,
+  },
+  searchInput: {
+    marginBottom: 15,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    backgroundColor: '#f5f5f5',
   },
   clientItem: {
     padding: 15,

@@ -4,7 +4,6 @@ import { Button, Modal, TextInput } from "react-native-paper";
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 import { db, auth } from "../firebaseConfig";
 
-
 export default function ClientsList({ navigation }) {
   const [clients, setClients] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -12,6 +11,7 @@ export default function ClientsList({ navigation }) {
   const [clientName, setClientName] = useState("");
   const [clientCpf, setClientCpf] = useState("");
   const [clientPhone, setClientPhone] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const user = auth.currentUser;
 
@@ -60,10 +60,22 @@ export default function ClientsList({ navigation }) {
     }
   };
 
+  const filteredClients = clients.filter(client =>
+    client.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <View style={styles.container}>
+      <TextInput
+        placeholder="Buscar clientes"
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        style={styles.searchInput}
+        mode="outlined"
+      />
+
       <FlatList
-        data={clients}
+        data={filteredClients}
         renderItem={({ item }) => (
           <View style={styles.clientCard}>
             <Text style={styles.clientName}>{item.name}</Text>
@@ -119,6 +131,9 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: "#F5F5F5",
+  },
+  searchInput: {
+    marginBottom: 15,
   },
   clientCard: {
     marginBottom: 15,
