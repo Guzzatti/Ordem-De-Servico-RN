@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Portal, TextInput, Button, Text } from "react-native-paper";
+import { Modal, Portal, TextInput, Button, Text, RadioButton } from "react-native-paper";
 import { View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import { collection, addDoc, updateDoc, doc, getDocs } from "firebase/firestore";
 import { db, auth } from "../firebaseConfig";
@@ -14,6 +14,7 @@ export default function OSMODAL({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [client, setClient] = useState("");
+  const [status, setStatus] = useState("Pendente"); // Adicionando o estado do status
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(false);
   const [clientModalVisible, setClientModalVisible] = useState(false);
@@ -24,6 +25,7 @@ export default function OSMODAL({
       setTitle(osToEdit.titleOs);
       setDescription(osToEdit.description);
       setClient(osToEdit.client);
+      setStatus(osToEdit.status || "Pendente"); // Inicializa o estado do status
     }
   }, [osToEdit]);
 
@@ -66,6 +68,7 @@ export default function OSMODAL({
             titleOs: title,
             description,
             client,
+            status, // Atualiza o status
             updatedAt: new Date()
           });
           alert("Ordem de Serviço atualizada com sucesso.");
@@ -75,6 +78,7 @@ export default function OSMODAL({
             titleOs: title,
             description,
             client,
+            status, // Adiciona o status
             createdAt: new Date(),
           });
           alert("Ordem de Serviço criada com sucesso.");
@@ -133,6 +137,19 @@ export default function OSMODAL({
               {client ? `Cliente: ${clients.find(c => c.id === client)?.name}` : "Selecione um cliente"}
             </Text>
           </TouchableOpacity>
+          <View style={styles.statusContainer}>
+            <Text style={styles.statusLabel}>Status:</Text>
+            <RadioButton.Group onValueChange={value => setStatus(value)} value={status}>
+              <View style={styles.statusOption}>
+                <RadioButton value="Pendente" />
+                <Text>Pendente</Text>
+              </View>
+              <View style={styles.statusOption}>
+                <RadioButton value="Finalizada" />
+                <Text>Finalizada</Text>
+              </View>
+            </RadioButton.Group>
+          </View>
           <View style={styles.buttonContainer}>
             <Button mode="contained" onPress={handleSave} loading={loading} style={styles.button}>
               {osToEdit ? "Atualizar" : "Criar"}
@@ -199,6 +216,18 @@ const styles = StyleSheet.create({
   },
   clientText: {
     color: '#333',
+  },
+  statusContainer: {
+    marginBottom: 15,
+  },
+  statusLabel: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  statusOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
   },
   buttonContainer: {
     alignItems: 'center',

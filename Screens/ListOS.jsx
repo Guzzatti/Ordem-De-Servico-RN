@@ -2,20 +2,19 @@ import React, { useState, useEffect } from "react";
 import { FlatList, StyleSheet, View, Text } from "react-native";
 import { List, Button, Divider } from "react-native-paper";
 import OSMODAL from "./OSModal";
-import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 import { db, auth } from '../firebaseConfig';
 
 export default function ListOS() {
   const [data, setData] = useState([]);
   const [osToEdit, setOsToEdit] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [clients, setClients] = useState([]); 
+  const [statusFilter, setStatusFilter] = useState("Pendente");
 
   useEffect(() => {
     fetchData();
-    fetchClients();
-  }, []);
-  
+  }, [statusFilter]);
+
   const fetchData = async () => {
     try {
       const user = auth.currentUser;
@@ -29,44 +28,26 @@ export default function ListOS() {
       const orders = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
-      }));
+      })).filter(order => order.status === statusFilter);
+
       setData(orders);
     } catch (error) {
       console.error("Erro ao buscar ordens de serviço: ", error);
     }
   };
 
-  const fetchClients = async () => {
+  const updateStatus = async (id, newStatus) => {
     try {
       const user = auth.currentUser;
       if (!user) {
         throw new Error("Usuário não autenticado");
       }
 
-      const clientsRef = collection(db, "organization", user.uid, "clients");
-      const querySnapshot = await getDocs(clientsRef);
-
-      const clientsList = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setClients(clientsList);
-    } catch (error) {
-      console.error("Erro ao buscar clientes: ", error);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      const user = auth.currentUser;
-      if (!user) {
-        throw new Error("Usuário não autenticado");
-      }
-
-      await deleteDoc(doc(db, "organization", user.uid, "serviceOrders", id));
+      const osRef = doc(db, "organization", user.uid, "serviceOrders", id);
+      await updateDoc(osRef, { status: newStatus });
       fetchData(); 
     } catch (error) {
-      console.error("Erro ao deletar ordem de serviço: ", error);
+      console.error("Erro ao atualizar ordem de serviço: ", error);
     }
   };
 
@@ -87,10 +68,9 @@ export default function ListOS() {
   };
 
   const getClientName = (clientId) => {
-    const client = clients.find(c => c.id === clientId);
-    return client ? client.name : "Nome não disponível";
+    // Function to get client name
   };
-  
+
   return (
     <View style={styles.container}>
       <OSMODAL
@@ -98,9 +78,24 @@ export default function ListOS() {
         hideModal={hideModal}
         osToEdit={osToEdit}
         setOsToEdit={setOsToEdit}
-        clients={clients}
         fetchData={fetchData}
       />
+      <View style={styles.navContainer}>
+        <Button
+          mode={statusFilter === "Pendente" ? "contained" : "outlined"}
+          onPress={() => setStatusFilter("Pendente")}
+          style={styles.navButton}
+        >
+          Pendentes
+        </Button>
+        <Button
+          mode={statusFilter === "Finalizada" ? "contained" : "outlined"}
+          onPress={() => setStatusFilter("Finalizada")}
+          style={styles.navButton}
+        >
+          Finalizadas
+        </Button>
+      </View>
       <FlatList
         style={styles.listContainer}
         data={data}
@@ -123,13 +118,13 @@ export default function ListOS() {
               onPress={() => showModal(item)}
               left={props => <List.Icon {...props} icon="archive" />}
               right={props => (
-                <View style={styles.deleteButtonContainer}>
+                <View style={styles.buttonContainer}>
                   <Button
                     mode="contained"
-                    onPress={() => handleDelete(item.id)}
-                    style={styles.deleteButton}
+                    onPress={() => updateStatus(item.id, item.status === "Pendente" ? "Finalizada" : "Pendente")}
+                    style={styles.updateButton}
                   >
-                    Deletar
+                    {item.status === "Pendente" ? "Finalizar" : "Reabrir"}
                   </Button>
                 </View>
               )}
@@ -137,7 +132,6 @@ export default function ListOS() {
             />
           </View>
         )}
-
       />
       <View style={styles.buttonContainer}>
         <Button mode="contained" onPress={() => showModal()} style={styles.addButton}>
@@ -153,6 +147,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F5F5F5",
     padding: 20,
+  },
+  navContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 15,
+  },
+  navButton: {
+    flex: 1,
+    marginHorizontal: 5,
   },
   listContainer: {
     flex: 1,
@@ -180,22 +183,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#888",
   },
-  icon: {
-    marginRight: 4,
-  },
-  deleteButtonContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    paddingRight: 10,
-  },
-  deleteButton: {
-    backgroundColor: "#D9534F",
-    borderRadius: 4,
-  },
   buttonContainer: {
     position: "absolute",
     bottom: 20,
     right: 20,
+  },
+  updateButton: {
+    backgroundColor: "#00B9D1",
+    borderRadius: 4,
   },
   addButton: {
     backgroundColor: "#00B9D1",
