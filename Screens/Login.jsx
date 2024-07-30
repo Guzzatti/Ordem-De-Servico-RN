@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
-import { Button, TextInput } from "react-native-paper";
+import { View, StyleSheet, Image, ScrollView } from "react-native";
+import { Button, TextInput, Text } from "react-native-paper";
 import { auth } from "../firebaseConfig";
 import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import ForgetPasswordModal from "./ForgetPasswordModal";
+import logo from "../assets/logo.png"; // Certifique-se de que o caminho esteja correto
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
@@ -47,7 +48,8 @@ export default function Login({ navigation }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Bem-vindo ao Reorganizer!</Text>
+      <Image source={logo} style={styles.logo} />
+      <Text style={styles.title}>Seja bem-vindo!</Text>
       <TextInput
         label="Email"
         mode="outlined"
@@ -101,6 +103,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 24,
   },
+  logo: {
+    width: 300, // Ajuste a largura conforme necessário
+    height: 120, // Ajuste a altura conforme necessário
+    alignSelf: "center",
+    marginBottom: 24,
+  },
   title: {
     fontSize: 28,
     fontWeight: "bold",
@@ -127,6 +135,6 @@ const styles = StyleSheet.create({
   },
   textButton: {
     marginHorizontal: 8,
-    color: "#00B9D1", // Cor do texto dos botões
+    color: "#00B9D1",
   },
 });

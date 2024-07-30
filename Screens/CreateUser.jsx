@@ -43,7 +43,7 @@ export default function CreateUser({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Criar Conta</Text>
+      <Text style={styles.title}>Este é o primeiro passo para mudar o seu negócio!</Text>
       <TextInput
         mode="outlined"
         value={name}

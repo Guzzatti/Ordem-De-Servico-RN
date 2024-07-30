@@ -1,16 +1,18 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet, Image } from "react-native";
 import { Button } from "react-native-paper";
 import { useEffect, useState } from "react";
 import { auth } from "../firebaseConfig";
+import logo from "../assets/logo.png"; // Certifique-se de que o caminho esteja correto
 
 export default function Home({ navigation }) {
   const [loading, setLoading] = useState(false);
   const user = auth.currentUser;
-  useEffect(()=>{
+
+  useEffect(() => {
     if (!user) {
       navigation.navigate("Login");
     }
-  })
+  }, [user, navigation]);
 
   function handleListOs() {
     navigation.navigate("ListOS");
@@ -24,10 +26,9 @@ export default function Home({ navigation }) {
     navigation.navigate("ClientsList");
   }
 
-
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Reorganizer</Text>
+      <Image source={logo} style={styles.logo} />
       <View style={styles.buttonContainer}>
         <Button mode="contained" onPress={handleListOs} style={styles.button}>
           Ordens de Serviço
@@ -51,12 +52,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 30,
-    color: "#043E59", // Cor do título
-    textAlign: "center",
+  logo: {
+    width: 200, // Ajuste a largura conforme necessário
+    height: 50, // Ajuste a altura conforme necessário
+    marginBottom: 20,
   },
   buttonContainer: {
     width: "100%",
@@ -71,6 +70,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   logoutButton: {
-    backgroundColor: "#D9534F", // Cor diferente para o botão de logout
+    backgroundColor: "#D9534F",
   },
 });
