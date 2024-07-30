@@ -1,7 +1,7 @@
-# Reorganizer
+![Logo do SOMA](./assets/logo.png)
 
 ## Descrição
-Projeto de ABP de desenvolvimento mobile em react native na SATC. O aplicativo Reorganizer é uma ferramenta para gerenciar ordens de serviço em uma empresa de manutenção. Ele permite que os usuários criem, atualizem e acompanhem o status das ordens de serviço de forma eficiente.
+Projeto de ABP de desenvolvimento mobile em react native na SATC. O aplicativo SOMA (Service Order Manager) é uma ferramenta para gerenciar ordens de serviço em uma empresa de manutenção. Ele permite que os usuários criem, atualizem e acompanhem o status das ordens de serviço de forma eficiente.
 
 ## Alunos
 - Gabriel Rona Guzzatti
