@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FlatList, StyleSheet, View, Text } from "react-native";
-import { List, Button, Divider, IconButton } from "react-native-paper";
+import { List, Button, Divider } from "react-native-paper";
 import OSMODAL from "./OSModal";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db, auth } from '../firebaseConfig';
@@ -86,6 +86,11 @@ export default function ListOS() {
     return new Date(date.seconds * 1000).toLocaleDateString(undefined, options);
   };
 
+  const getClientName = (clientId) => {
+    const client = clients.find(c => c.id === clientId);
+    return client ? client.name : "Nome não disponível";
+  };
+  
   return (
     <View style={styles.container}>
       <OSMODAL
@@ -104,10 +109,11 @@ export default function ListOS() {
             <List.Item
               title={item.titleOs}
               description={
-                <View style={styles.descriptionContainer}>
-                  <Text style={styles.clientText}>{item.client || "Cliente não disponível"}</Text>
-                  <View style={styles.dateContainer}>
-                    <IconButton icon="calendar" size={18} style={styles.icon} />
+                <View>
+                  <View style={styles.descriptionContainer}>
+                    <Text style={styles.clientText}>{getClientName(item.client)}</Text>
+                  </View>
+                  <View>
                     <Text style={styles.dateText}>
                       {item.createdAt ? formatDate(item.createdAt) : "Data não disponível"}
                     </Text>
@@ -129,10 +135,9 @@ export default function ListOS() {
               )}
               style={styles.listItem}
             />
-            <Divider />
           </View>
         )}
-        keyExtractor={item => item.id}
+
       />
       <View style={styles.buttonContainer}>
         <Button mode="contained" onPress={() => showModal()} style={styles.addButton}>

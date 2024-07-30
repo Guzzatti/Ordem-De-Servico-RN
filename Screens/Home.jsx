@@ -1,13 +1,16 @@
 import { View, Text, StyleSheet } from "react-native";
 import { Button } from "react-native-paper";
+import { useEffect, useState } from "react";
 import { auth } from "../firebaseConfig";
-import { signOut } from "firebase/auth";
-import { useState } from "react";
 
 export default function Home({ navigation }) {
   const [loading, setLoading] = useState(false);
-
-  
+  const user = auth.currentUser;
+  useEffect(()=>{
+    if (!user) {
+      navigation.navigate("Login");
+    }
+  })
 
   function handleListOs() {
     navigation.navigate("ListOS");

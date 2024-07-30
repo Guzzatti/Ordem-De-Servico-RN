@@ -9,18 +9,24 @@ import { setDoc, doc } from "firebase/firestore";
 
 export default function CreateUser({ navigation }) {
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassWord,setConfirmPassWord] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function handleCreateUser() {
     setLoading(true);
     try {
+      if (password !== confirmPassWord) {
+        throw new Error("As senhas não coincidem");
+      }
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
       await setDoc(doc(db, 'users', user.uid), {
         email: user.email,
+        name: name,
       });
       await setDoc(doc(db, 'organization', user.uid), {
         userId: user.uid,
@@ -39,13 +45,19 @@ export default function CreateUser({ navigation }) {
     <View style={styles.container}>
       <Text style={styles.title}>Criar Conta</Text>
       <TextInput
+        mode="outlined"
+        value={name}
+        onChangeText={setName}
+        label="Nome"
+        theme={{ colors: { primary: "#00B9D1" } }}
+      />
+      <TextInput
         label="Email"
         mode="outlined"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
-        style={styles.input}
         theme={{ colors: { primary: "#00B9D1" } }}
       />
       <TextInput
@@ -54,7 +66,14 @@ export default function CreateUser({ navigation }) {
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        style={styles.input}
+        theme={{ colors: { primary: "#00B9D1" } }}
+      />
+      <TextInput
+        label="Senha"
+        mode="outlined"
+        value={confirmPassWord}
+        onChangeText={setConfirmPassWord}
+        secureTextEntry
         theme={{ colors: { primary: "#00B9D1" } }}
       />
       {error ? <Text style={styles.error}>{error}</Text> : null}
@@ -79,6 +98,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F5F5F5",
     justifyContent: "center",
     padding: 24,
+    gap:20,
   },
   title: {
     fontSize: 26,
@@ -87,17 +107,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#043E59",
   },
-  input: {
-    marginBottom: 15,
-    backgroundColor: "#FFFFFF",
-    borderColor: "#E0E0E0",
-    borderRadius: 8,
-  },
   buttonContainer: {
     alignItems: "center",
   },
   button: {
-    marginTop: 15,
     backgroundColor: "#00B9D1",
     borderRadius: 8,
   },

@@ -26,27 +26,27 @@ export default function OSMODAL({
     }
   }, [osToEdit]);
 
-  useEffect(() => {
-    const fetchClients = async () => {
-      setLoading(true);
-      try {
-        const user = auth.currentUser;
-        if (user) {
-          const clientsRef = collection(db, "organization", user.uid, "clients");
-          const querySnapshot = await getDocs(clientsRef);
-          const clientsList = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-          }));
-          setClients(clientsList);
-        }
-      } catch (error) {
-        console.error("Erro ao buscar clientes:", error);
-      } finally {
-        setLoading(false);
+  const fetchClients = async () => {
+    setLoading(true);
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        const clientsRef = collection(db, "organization", user.uid, "clients");
+        const querySnapshot = await getDocs(clientsRef);
+        const clientsList = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setClients(clientsList);
       }
-    };
+    } catch (error) {
+      console.error("Erro ao buscar clientes:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchClients();
   }, []);
 
