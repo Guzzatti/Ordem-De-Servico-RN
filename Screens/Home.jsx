@@ -53,8 +53,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   logo: {
-    width: 200, // Ajuste a largura conforme necessário
-    height: 50, // Ajuste a altura conforme necessário
+    width: 200, 
+    height: 50, 
     marginBottom: 20,
   },
   buttonContainer: {

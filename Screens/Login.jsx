@@ -49,7 +49,7 @@ export default function Login({ navigation }) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Image source={logo} style={styles.logo} />
-      <Text style={styles.title}>Seja bem-vindo!</Text>
+      <Text style={styles.title}>SEJA BEM-VINDO!</Text>
       <TextInput
         label="Email"
         mode="outlined"
@@ -104,8 +104,8 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   logo: {
-    width: 300, // Ajuste a largura conforme necessário
-    height: 120, // Ajuste a altura conforme necessário
+    width: 300, 
+    height: 120, 
     alignSelf: "center",
     marginBottom: 24,
   },
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 24,
     textAlign: "center",
-    color: "#333",
+    color: "#00B9D1",
   },
   input: {
     marginBottom: 16,
