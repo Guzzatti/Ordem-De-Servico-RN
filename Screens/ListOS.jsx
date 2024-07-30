@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FlatList, StyleSheet, View, Text } from "react-native";
+import { FlatList, StyleSheet, View, Text, TextInput } from "react-native";
 import { List, Button, Divider } from "react-native-paper";
 import OSMODAL from "./OSModal";
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
@@ -11,6 +11,7 @@ export default function ListOS() {
   const [modalVisible, setModalVisible] = useState(false);
   const [statusFilter, setStatusFilter] = useState("Pendente");
   const [clients, setClients] = useState([]);
+  const [searchText, setSearchText] = useState("");
 
   const fetchClients = async () => {
     try {
@@ -94,6 +95,10 @@ export default function ListOS() {
     return client ? client.name : "Nome não disponível";
   };
 
+  const filteredData = data.filter(item => 
+    getClientName(item.client).toLowerCase().includes(searchText.toLowerCase())
+  );
+
   return (
     <View style={styles.container}>
       <OSMODAL
@@ -102,6 +107,12 @@ export default function ListOS() {
         osToEdit={osToEdit}
         setOsToEdit={setOsToEdit}
         fetchData={fetchData}
+      />
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Pesquisar pelo nome do cliente"
+        value={searchText}
+        onChangeText={setSearchText}
       />
       <View style={styles.navContainer}>
         <Button
@@ -121,7 +132,7 @@ export default function ListOS() {
       </View>
       <FlatList
         style={styles.listContainer}
-        data={data}
+        data={filteredData}
         renderItem={({ item }) => (
           <View>
             <List.Item
@@ -170,6 +181,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F5F5F5",
     padding: 20,
+  },
+  searchInput: {
+    marginBottom: 15,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    backgroundColor: '#f5f5f5',
   },
   navContainer: {
     flexDirection: 'row',

@@ -44,7 +44,7 @@ export default function CreateUser({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={{height:"10%",alignItems:"flex-end"}}>
-        <Button onPress={()=>{navigation.navigate("Login")}}>voltar</Button>
+        <Button onPress={()=>{navigation.navigate("Login")}}>Voltar</Button>
       </View>
       <Text style={styles.title}>Este é o primeiro passo para mudar o seu negócio!</Text>
       <TextInput
