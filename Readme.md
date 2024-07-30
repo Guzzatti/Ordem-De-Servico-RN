@@ -1,4 +1,6 @@
-![Logo do SOMA](./assets/logo.png)
+<p align="center">
+  <img src="./assets/logo.png" alt="Logo da SOMA" width="150"/>
+</p>
 
 ## Descrição
 Projeto de ABP de desenvolvimento mobile em react native na SATC. O aplicativo SOMA (Service Order Manager) é uma ferramenta para gerenciar ordens de serviço em uma empresa de manutenção. Ele permite que os usuários criem, atualizem e acompanhem o status das ordens de serviço de forma eficiente.
