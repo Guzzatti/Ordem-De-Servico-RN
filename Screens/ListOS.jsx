@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { FlatList, StyleSheet, View, Text, TextInput } from "react-native";
-import { List, Button, Divider } from "react-native-paper";
+import React, { useState, useEffect, useRef } from "react";
+import { FlatList, StyleSheet, View, Text, TextInput, Animated } from "react-native";
+import { List, Button } from "react-native-paper";
 import OSMODAL from "./OSModal";
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 import { db, auth } from '../firebaseConfig';
@@ -12,6 +12,7 @@ export default function ListOS() {
   const [statusFilter, setStatusFilter] = useState("Pendente");
   const [clients, setClients] = useState([]);
   const [searchText, setSearchText] = useState("");
+  const fadeAnim = useRef(new Animated.Value(1)).current; // Inicializa a animação
 
   const fetchClients = async () => {
     try {
@@ -53,7 +54,20 @@ export default function ListOS() {
         ...doc.data(),
       })).filter(order => order.status === statusFilter);
 
-      setData(orders);
+      // Fade out animation
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => {
+        setData(orders);
+        // Fade in animation
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }).start();
+      });
     } catch (error) {
       console.error("Erro ao buscar ordens de serviço: ", error);
     }
@@ -130,7 +144,7 @@ export default function ListOS() {
           Finalizadas
         </Button>
       </View>
-      <FlatList
+      <Animated.FlatList
         style={styles.listContainer}
         data={filteredData}
         renderItem={({ item }) => (
@@ -166,6 +180,9 @@ export default function ListOS() {
             />
           </View>
         )}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.listContainer}
+        opacity={fadeAnim} // Aplica a animação de fade
       />
       <View style={styles.buttonContainer}>
         <Button mode="contained" onPress={() => showModal()} style={styles.addButton}>

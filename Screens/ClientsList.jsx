@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, FlatList, Text } from "react-native";
+import { View, StyleSheet, FlatList, Text, Animated } from "react-native";
 import { Button, Modal, TextInput } from "react-native-paper";
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 import { db, auth } from "../firebaseConfig";
@@ -12,6 +12,7 @@ export default function ClientsList({ navigation }) {
   const [clientCpf, setClientCpf] = useState("");
   const [clientPhone, setClientPhone] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [fadeAnim] = useState(new Animated.Value(0)); // Initial value for opacity
 
   const user = auth.currentUser;
 
@@ -29,6 +30,12 @@ export default function ClientsList({ navigation }) {
         ...doc.data(),
       }));
       setClients(tempClients);
+      // Start the fade-in animation
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
     } catch (error) {
       console.error("Erro ao buscar clientes: ", error);
     }
@@ -74,18 +81,20 @@ export default function ClientsList({ navigation }) {
         mode="outlined"
       />
 
-      <FlatList
-        data={filteredClients}
-        renderItem={({ item }) => (
-          <View style={styles.clientCard}>
-            <Text style={styles.clientName}>{item.name}</Text>
-            <Button mode="contained" onPress={() => handleSelectClient(item)} style={styles.editButton}>
-              Editar
-            </Button>
-          </View>
-        )}
-        keyExtractor={(item) => item.id.toString()}
-      />
+      <Animated.View style={[styles.listContainer, { opacity: fadeAnim }]}>
+        <FlatList
+          data={filteredClients}
+          renderItem={({ item }) => (
+            <View style={styles.clientCard}>
+              <Text style={styles.clientName}>{item.name}</Text>
+              <Button mode="contained" onPress={() => handleSelectClient(item)} style={styles.editButton}>
+                Editar
+              </Button>
+            </View>
+          )}
+          keyExtractor={(item) => item.id.toString()}
+        />
+      </Animated.View>
 
       <Modal
         visible={modalVisible}
@@ -134,6 +143,9 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     marginBottom: 15,
+  },
+  listContainer: {
+    flex: 1,
   },
   clientCard: {
     marginBottom: 15,
