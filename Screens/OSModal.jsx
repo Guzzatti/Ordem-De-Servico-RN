@@ -14,18 +14,18 @@ export default function OSMODAL({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [client, setClient] = useState("");
-  const [status, setStatus] = useState("Pendente"); // Adicionando o estado do status
+  const [status, setStatus] = useState("Pendente");
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(false);
   const [clientModalVisible, setClientModalVisible] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(""); // Estado para a barra de pesquisa
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     if (osToEdit) {
       setTitle(osToEdit.titleOs);
       setDescription(osToEdit.description);
       setClient(osToEdit.client);
-      setStatus(osToEdit.status || "Pendente"); // Inicializa o estado do status
+      setStatus(osToEdit.status || "Pendente");
     }
   }, [osToEdit]);
 
@@ -62,30 +62,28 @@ export default function OSMODAL({
     if (title && description && client) {
       try {
         if (osToEdit) {
-          // Atualizar ordem de serviço existente
           const osRef = doc(db, "organization", user.uid, "serviceOrders", osToEdit.id);
           await updateDoc(osRef, {
             titleOs: title,
             description,
             client,
-            status, // Atualiza o status
+            status,
             updatedAt: new Date()
           });
           alert("Ordem de Serviço atualizada com sucesso.");
         } else {
-          // Criar nova ordem de serviço
           await addDoc(collection(db, "organization", user.uid, "serviceOrders"), {
             titleOs: title,
             description,
             client,
-            status, // Adiciona o status
+            status,
             createdAt: new Date(),
           });
           alert("Ordem de Serviço criada com sucesso.");
         }
-        fetchData(); // Atualiza a lista de ordens de serviço
-        hideModal(); // Fecha o modal
-        setOsToEdit(null); // Limpa o estado de edição
+        fetchData();
+        hideModal();
+        setOsToEdit(null);
       } catch (error) {
         console.error("Erro ao salvar a ordem de serviço:", error);
         alert("Ocorreu um erro ao salvar a ordem de serviço. Por favor, tente novamente.");
@@ -139,7 +137,10 @@ export default function OSMODAL({
           </TouchableOpacity>
           <View style={styles.statusContainer}>
             <Text style={styles.statusLabel}>Status:</Text>
-            <RadioButton.Group onValueChange={value => setStatus(value)} value={status}>
+            <RadioButton.Group
+              onValueChange={value => setStatus(value)}
+              value={status}
+            >
               <View style={styles.statusOption}>
                 <RadioButton value="Pendente" />
                 <Text>Pendente</Text>
@@ -192,18 +193,19 @@ const styles = StyleSheet.create({
     margin: 20,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#00B9D1",
     elevation: 5,
   },
   title: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 15,
-    color: '#333',
+    marginBottom: 20,
+    color: '#043E59',
     textAlign: 'center',
   },
   input: {
     marginBottom: 15,
+    backgroundColor: '#fff',
   },
   clientSelector: {
     marginBottom: 15,
@@ -211,17 +213,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#00B9D1",
     borderRadius: 5,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f7f7f7',
     justifyContent: 'center',
   },
   clientText: {
-    color: '#333',
+    color: '#043E59',
   },
   statusContainer: {
-    marginBottom: 15,
+    marginBottom: 20,
   },
   statusLabel: {
     fontSize: 16,
+    color: '#043E59',
     marginBottom: 5,
   },
   statusOption: {
@@ -235,6 +238,7 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '100%',
+    backgroundColor: '#00B9D1',
   },
   clientModal: {
     backgroundColor: "#fff",
@@ -242,16 +246,16 @@ const styles = StyleSheet.create({
     margin: 20,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#00B9D1",
     elevation: 5,
   },
   searchInput: {
     marginBottom: 15,
     padding: 10,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#00B9D1",
     borderRadius: 5,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f7f7f7',
   },
   clientItem: {
     padding: 15,
@@ -259,6 +263,6 @@ const styles = StyleSheet.create({
     borderBottomColor: "#ccc",
   },
   clientItemText: {
-    color: '#333',
+    color: '#043E59',
   },
 });
