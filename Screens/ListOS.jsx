@@ -54,13 +54,23 @@ export default function ListOS() {
         ...doc.data(),
       })).filter(order => order.status === statusFilter);
 
+      // Ordena as ordens com base no status
+      const sortedOrders = orders.sort((a, b) => {
+        if (statusFilter === "Pendente") {
+          return (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0); // Mais antigo primeiro
+        } else if (statusFilter === "Finalizada") {
+          return (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0); // Mais recente primeiro
+        }
+        return 0; // Caso não seja Pendente nem Finalizada, não altera a ordem
+      });
+
       // Fade out animation
       Animated.timing(fadeAnim, {
         toValue: 0,
         duration: 300,
         useNativeDriver: true,
       }).start(() => {
-        setData(orders);
+        setData(sortedOrders);
         // Fade in animation
         Animated.timing(fadeAnim, {
           toValue: 1,
@@ -145,7 +155,6 @@ export default function ListOS() {
         </Button>
       </View>
       <Animated.FlatList
-        style={styles.listContainer}
         data={filteredData}
         renderItem={({ item }) => (
           <View>
@@ -215,9 +224,6 @@ const styles = StyleSheet.create({
   navButton: {
     flex: 1,
     marginHorizontal: 5,
-  },
-  listContainer: {
-    flex: 1,
   },
   listItem: {
     backgroundColor: "#FFFFFF",

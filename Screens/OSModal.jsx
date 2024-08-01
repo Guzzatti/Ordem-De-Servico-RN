@@ -124,8 +124,9 @@ export default function OSMODAL({
             label="Descrição"
             mode="outlined"
             value={description}
+            multiline={true}
             onChangeText={setDescription}
-            style={styles.input}
+            style={styles.inputDescription}
           />
           <TouchableOpacity
             style={styles.clientSelector}
@@ -135,6 +136,7 @@ export default function OSMODAL({
               {client ? `Cliente: ${clients.find(c => c.id === client)?.name}` : "Selecione um cliente"}
             </Text>
           </TouchableOpacity>
+          <Text style={styles.statusLabel}>{client ? `Contato: ${clients.find(c => c.id === client)?.phone}` : ""}</Text>
           <View style={styles.statusContainer}>
             <Text style={styles.statusLabel}>Status:</Text>
             <RadioButton.Group
@@ -206,6 +208,12 @@ const styles = StyleSheet.create({
   input: {
     marginBottom: 15,
     backgroundColor: '#fff',
+  },
+  inputDescription: {
+    marginBottom: 15,
+    backgroundColor: '#fff',
+    height: 100,
+    textAlignVertical: 'top',
   },
   clientSelector: {
     marginBottom: 15,
