@@ -1,7 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Portal, TextInput, Button, Text, RadioButton } from "react-native-paper";
+import {
+  Modal,
+  Portal,
+  TextInput,
+  Button,
+  Text,
+  RadioButton,
+} from "react-native-paper";
 import { View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
-import { collection, addDoc, updateDoc, doc, getDocs } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  updateDoc,
+  doc,
+  getDocs,
+} from "firebase/firestore";
 import { db, auth } from "../firebaseConfig";
 
 export default function OSMODAL({
@@ -20,12 +33,21 @@ export default function OSMODAL({
   const [clientModalVisible, setClientModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
+  resetForm = () => {
+    setTitle("");
+    setDescription("");
+    setClient("");
+    setStatus("Pendente");
+  };
+
   useEffect(() => {
     if (osToEdit) {
       setTitle(osToEdit.titleOs);
       setDescription(osToEdit.description);
       setClient(osToEdit.client);
       setStatus(osToEdit.status || "Pendente");
+    } else {
+      resetForm();
     }
   }, [osToEdit]);
 
@@ -36,9 +58,9 @@ export default function OSMODAL({
       if (user) {
         const clientsRef = collection(db, "organization", user.uid, "clients");
         const querySnapshot = await getDocs(clientsRef);
-        const clientsList = querySnapshot.docs.map(doc => ({
+        const clientsList = querySnapshot.docs.map((doc) => ({
           id: doc.id,
-          ...doc.data()
+          ...doc.data(),
         }));
         setClients(clientsList);
       }
@@ -54,6 +76,7 @@ export default function OSMODAL({
   }, []);
 
   const handleSave = async () => {
+    setLoading(true);
     const user = auth.currentUser;
     if (!user) {
       alert("Usuário não autenticado. Por favor, faça login novamente.");
@@ -62,31 +85,46 @@ export default function OSMODAL({
     if (title && description && client) {
       try {
         if (osToEdit) {
-          const osRef = doc(db, "organization", user.uid, "serviceOrders", osToEdit.id);
+          const osRef = doc(
+            db,
+            "organization",
+            user.uid,
+            "serviceOrders",
+            osToEdit.id
+          );
           await updateDoc(osRef, {
             titleOs: title,
             description,
             client,
             status,
-            updatedAt: new Date()
+            updatedAt: new Date(),
           });
           alert("Ordem de Serviço atualizada com sucesso.");
         } else {
-          await addDoc(collection(db, "organization", user.uid, "serviceOrders"), {
-            titleOs: title,
-            description,
-            client,
-            status,
-            createdAt: new Date(),
-          });
+          await addDoc(
+            collection(db, "organization", user.uid, "serviceOrders"),
+            {
+              titleOs: title,
+              description,
+              client,
+              status,
+              createdAt: new Date(),
+            }
+          );
           alert("Ordem de Serviço criada com sucesso.");
         }
         fetchData();
         hideModal();
         setOsToEdit(null);
+        setTitle("");
+        setDescription("");
+        setClient("");
+        setStatus("Pendente");
       } catch (error) {
         console.error("Erro ao salvar a ordem de serviço:", error);
-        alert("Ocorreu um erro ao salvar a ordem de serviço. Por favor, tente novamente.");
+        alert(
+          "Ocorreu um erro ao salvar a ordem de serviço. Por favor, tente novamente."
+        );
       }
     } else {
       alert("Preencha todos os campos.");
@@ -98,7 +136,7 @@ export default function OSMODAL({
     setClientModalVisible(false);
   };
 
-  const filteredClients = clients.filter(client =>
+  const filteredClients = clients.filter((client) =>
     client.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -133,14 +171,20 @@ export default function OSMODAL({
             onPress={() => setClientModalVisible(true)}
           >
             <Text style={styles.clientText}>
-              {client ? `Cliente: ${clients.find(c => c.id === client)?.name}` : "Selecione um cliente"}
+              {client
+                ? `Cliente: ${clients.find((c) => c.id === client)?.name}`
+                : "Selecione um cliente"}
             </Text>
           </TouchableOpacity>
-          <Text style={styles.statusLabel}>{client ? `Contato: ${clients.find(c => c.id === client)?.phone}` : ""}</Text>
+          <Text style={styles.statusLabel}>
+            {client
+              ? `Contato: ${clients.find((c) => c.id === client)?.phone}`
+              : ""}
+          </Text>
           <View style={styles.statusContainer}>
             <Text style={styles.statusLabel}>Status:</Text>
             <RadioButton.Group
-              onValueChange={value => setStatus(value)}
+              onValueChange={(value) => setStatus(value)}
               value={status}
             >
               <View style={styles.statusOption}>
@@ -154,7 +198,12 @@ export default function OSMODAL({
             </RadioButton.Group>
           </View>
           <View style={styles.buttonContainer}>
-            <Button mode="contained" onPress={handleSave} loading={loading} style={styles.button}>
+            <Button
+              mode="contained"
+              onPress={handleSave}
+              loading={loading}
+              style={styles.button}
+            >
               {osToEdit ? "Atualizar" : "Criar"}
             </Button>
           </View>
@@ -200,20 +249,20 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
-    color: '#043E59',
-    textAlign: 'center',
+    color: "#043E59",
+    textAlign: "center",
   },
   input: {
     marginBottom: 15,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   inputDescription: {
     marginBottom: 15,
-    backgroundColor: '#fff',
-    height: 100,
-    textAlignVertical: 'top',
+    backgroundColor: "#fff",
+    height: 120,
+    textAlignVertical: "top",
   },
   clientSelector: {
     marginBottom: 15,
@@ -221,32 +270,32 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#00B9D1",
     borderRadius: 5,
-    backgroundColor: '#f7f7f7',
-    justifyContent: 'center',
+    backgroundColor: "#f7f7f7",
+    justifyContent: "center",
   },
   clientText: {
-    color: '#043E59',
+    color: "#043E59",
   },
   statusContainer: {
     marginBottom: 20,
   },
   statusLabel: {
     fontSize: 16,
-    color: '#043E59',
+    color: "#043E59",
     marginBottom: 5,
   },
   statusOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 5,
   },
   buttonContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 15,
   },
   button: {
-    width: '100%',
-    backgroundColor: '#00B9D1',
+    width: "100%",
+    backgroundColor: "#00B9D1",
   },
   clientModal: {
     backgroundColor: "#fff",
@@ -263,7 +312,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#00B9D1",
     borderRadius: 5,
-    backgroundColor: '#f7f7f7',
+    backgroundColor: "#f7f7f7",
   },
   clientItem: {
     padding: 15,
@@ -271,6 +320,6 @@ const styles = StyleSheet.create({
     borderBottomColor: "#ccc",
   },
   clientItemText: {
-    color: '#043E59',
+    color: "#043E59",
   },
 });

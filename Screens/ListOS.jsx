@@ -190,7 +190,6 @@ export default function ListOS() {
           </View>
         )}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContainer}
         opacity={fadeAnim} // Aplica a animação de fade
       />
       <View style={styles.buttonContainer}>
