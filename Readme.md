@@ -28,7 +28,7 @@ Projeto de ABP de desenvolvimento mobile em react native na SATC. O aplicativo S
 1. Acesse o aplicativo através do navegador no endereço `http://localhost:3000`.
 2. Faça login com suas credenciais de usuário ou crie uma nova conta.
 3. Crie um cliente preenchendo os campos necessários.
-4. Crie uma nova ordem de serviço preenchendo os campos necessários.
+4. Crie uma nova ordem de serviço preenchendo os campos necessários, criando primeiramente o cliente.
 5. Atualize o status de uma ordem de serviço relacionada a um cliente previamente cadastrado.
 6. Acompanhe o histórico das ordens de serviço para obter informações detalhadas.
 
