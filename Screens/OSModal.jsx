@@ -20,12 +20,21 @@ export default function OSMODAL({
   const [clientModalVisible, setClientModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
+  function resetData(){
+    setTitle("");
+    setDescription("");
+    setClient("");
+    setStatus("Pendente");
+  }
+
   useEffect(() => {
     if (osToEdit) {
       setTitle(osToEdit.titleOs);
       setDescription(osToEdit.description);
       setClient(osToEdit.client);
       setStatus(osToEdit.status || "Pendente");
+    }else{
+      resetData();
     }
   }, [osToEdit]);
 
