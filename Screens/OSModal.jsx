@@ -3,6 +3,7 @@ import { Modal, Portal, TextInput, Button, Text, RadioButton } from "react-nativ
 import { View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import { collection, addDoc, updateDoc, doc, getDocs } from "firebase/firestore";
 import { db, auth } from "../firebaseConfig";
+import { useNavigation } from "@react-navigation/native"; // Importar useNavigation
 
 export default function OSMODAL({
   visible,
@@ -19,6 +20,7 @@ export default function OSMODAL({
   const [loading, setLoading] = useState(false);
   const [clientModalVisible, setClientModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const navigation = useNavigation(); // Inicializar useNavigation
 
   function resetData(){
     setTitle("");
@@ -33,7 +35,7 @@ export default function OSMODAL({
       setDescription(osToEdit.description);
       setClient(osToEdit.client);
       setStatus(osToEdit.status || "Pendente");
-    }else{
+    } else {
       resetData();
     }
   }, [osToEdit]);
@@ -111,6 +113,11 @@ export default function OSMODAL({
     client.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const handleRegisterClient = () => {
+    setClientModalVisible(false); // Fecha o modal de clientes
+    navigation.navigate("CreateClient"); // Navega para a tela de criação de cliente
+  };
+
   return (
     <Portal>
       <Modal
@@ -172,24 +179,39 @@ export default function OSMODAL({
         onDismiss={() => setClientModalVisible(false)}
         contentContainerStyle={styles.clientModal}
       >
-        <TextInput
-          placeholder="Pesquisar cliente"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          style={styles.searchInput}
-        />
-        <FlatList
-          data={filteredClients}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.clientItem}
-              onPress={() => selectClient(item.id)}
+        {clients.length === 0 ? (
+          <View style={styles.emptyClientContainer}>
+            <Text style={styles.emptyClientText}>Nenhum cliente registrado.</Text>
+            <Button
+              mode="contained"
+              onPress={handleRegisterClient} // Usar a função para registrar cliente e fechar o modal
+              style={styles.registerButton}
             >
-              <Text style={styles.clientItemText}>{item.name}</Text>
-            </TouchableOpacity>
-          )}
-        />
+              Registrar Cliente
+            </Button>
+          </View>
+        ) : (
+          <>
+            <TextInput
+              placeholder="Pesquisar cliente"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              style={styles.searchInput}
+            />
+            <FlatList
+              data={filteredClients}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.clientItem}
+                  onPress={() => selectClient(item.id)}
+                >
+                  <Text style={styles.clientItemText}>{item.name}</Text>
+                </TouchableOpacity>
+              )}
+            />
+          </>
+        )}
       </Modal>
     </Portal>
   );
@@ -274,4 +296,14 @@ const styles = StyleSheet.create({
   clientItemText: {
     color: '#043E59',
   },
-}); 
+  emptyClientContainer: {
+    alignItems: 'center',
+  },
+  emptyClientText: {
+    marginBottom: 15,
+    color: '#043E59',
+  },
+  registerButton: {
+    backgroundColor: '#00B9D1',
+  },
+});
