@@ -25,7 +25,7 @@ export default function ClientsList({ navigation }) {
     try {
       const clientsRef = collection(db, "organization", user.uid, "clients");
       const querySnapshot = await getDocs(clientsRef);
-      const tempClients = querySnapshot.docs.map(doc => ({
+      const tempClients = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
@@ -44,6 +44,9 @@ export default function ClientsList({ navigation }) {
   useEffect(() => {
     fetchClients();
   }, [user]);
+  const handleNavCreateClient = () => {
+    navigation.navigate("CreateClient");
+  };
 
   const handleSelectClient = (client) => {
     setSelectedClient(client);
@@ -57,8 +60,18 @@ export default function ClientsList({ navigation }) {
     if (!selectedClient) return;
 
     try {
-      const clientRef = doc(db, "organization", user.uid, "clients", selectedClient.id);
-      await updateDoc(clientRef, { name: clientName, cpf: clientCpf, phone: clientPhone });
+      const clientRef = doc(
+        db,
+        "organization",
+        user.uid,
+        "clients",
+        selectedClient.id
+      );
+      await updateDoc(clientRef, {
+        name: clientName,
+        cpf: clientCpf,
+        phone: clientPhone,
+      });
       setModalVisible(false);
       fetchClients();
       setSelectedClient(null);
@@ -67,7 +80,7 @@ export default function ClientsList({ navigation }) {
     }
   };
 
-  const filteredClients = clients.filter(client =>
+  const filteredClients = clients.filter((client) =>
     client.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -87,7 +100,11 @@ export default function ClientsList({ navigation }) {
           renderItem={({ item }) => (
             <View style={styles.clientCard}>
               <Text style={styles.clientName}>{item.name}</Text>
-              <Button mode="contained" onPress={() => handleSelectClient(item)} style={styles.editButton}>
+              <Button
+                mode="contained"
+                onPress={() => handleSelectClient(item)}
+                style={styles.editButton}
+              >
                 Editar
               </Button>
             </View>
@@ -95,7 +112,15 @@ export default function ClientsList({ navigation }) {
           keyExtractor={(item) => item.id.toString()}
         />
       </Animated.View>
-
+      <View style={styles.buttonContainer}>
+        <Button
+          mode="contained"
+          onPress={() => handleNavCreateClient()}
+          style={styles.addButton}
+        >
+          Adicionar Cliente
+        </Button>
+      </View>
       <Modal
         visible={modalVisible}
         onDismiss={() => setModalVisible(false)}
@@ -126,7 +151,11 @@ export default function ClientsList({ navigation }) {
             keyboardType="phone-pad"
             mode="outlined"
           />
-          <Button mode="contained" onPress={handleSaveClient} style={styles.saveButton}>
+          <Button
+            mode="contained"
+            onPress={handleSaveClient}
+            style={styles.saveButton}
+          >
             Salvar
           </Button>
         </View>
@@ -165,18 +194,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   editButton: {
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
   },
   modalContainer: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#fff",
     padding: 20,
-    borderRadius: 12,
+    margin: 20,
+    borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#E0E0E0",
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
+    borderColor: "#00B9D1",
+    elevation: 5,
   },
   modalTitle: {
     fontSize: 18,
@@ -189,5 +216,10 @@ const styles = StyleSheet.create({
   saveButton: {
     marginTop: 20,
     backgroundColor: "#00B9D1",
+  },
+  buttonContainer: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
   },
 });
