@@ -23,6 +23,7 @@ const Stack = createStackNavigator();
 function CustomDrawerContent(props) {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const logo = require("./assets/logo.png"); 
 
   const handleLogout = () => {
     signOut(auth)
@@ -45,12 +46,10 @@ function CustomDrawerContent(props) {
     setName(doc.data().name);
   });
 
-
-
   return (
     <View style={styles.drawerContainer}>
       <View>
-
+        <Image source={logo} style={{width:150,height:70}}/>
       </View>
       <View>
         <Text style={styles.userName}>{name}</Text>
@@ -68,10 +67,23 @@ function CustomDrawerContent(props) {
     </View>
   );
 }
+function CustomStackContent(props) {
+  const logo = require("./assets/logo.png");
+ 
+
+  return (
+    <View>
+      <Image source={logo} style={{width:100,height:55}}/>
+    </View>
+  );
+}
 
 function HomeStack({ navigation }) {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{ headerRight: (props) => <CustomStackContent {...props} /> }}
+    >
+      
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="ListOS" component={ListOS} />
       <Stack.Screen name="ClientsList" component={ClientsList} />
@@ -84,7 +96,8 @@ function App() {
   return (
     <PaperProvider theme={theme}>
       <NavigationContainer>
-        <Drawer.Navigator initialRouteName="Login"
+        <Drawer.Navigator
+          initialRouteName="Login"
           drawerContent={(props) => <CustomDrawerContent {...props} />}
           screenOptions={{
             headerShown: false,

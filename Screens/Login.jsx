@@ -26,7 +26,7 @@ export default function Login({ navigation }) {
     setLoading(true);
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
-        navigation.navigate("Home");
+        navigation.navigate("HomeStack");
         setEmail("");
         setPassword("");
       })

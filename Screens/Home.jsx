@@ -28,7 +28,6 @@ export default function Home({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Image source={logo} style={styles.logo} />
       <View style={styles.buttonContainer}>
         <Button mode="contained" onPress={handleListOs} style={styles.button}>
           Ordens de Serviço
