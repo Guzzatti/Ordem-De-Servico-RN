@@ -178,7 +178,7 @@ export default function OSMODAL({
             </Text>
           </TouchableOpacity>
           <View style={{paddingTop:10,paddingBottom:10}}>
-            <Text>Contato: {clients.find((c) => c.id === client)?.phone}</Text>
+            <Text style={styles.statusLabel}>Contato: {clients.find((c) => c.id === client)?.phone}</Text>
           </View>
           <View style={styles.statusContainer}>
             <Text style={styles.statusLabel}>Status:</Text>

@@ -13,36 +13,46 @@ export default function Login({ navigation }) {
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        navigation.navigate("HomeStack");
-      }
-    });
-    return () => unsubscribe();
-  }, [navigation]);
 
-  function handleLogin() {
+  const handleLogin = () => {
+    if (!email || !password) {
+      setError("Por favor, preencha todos os campos.");
+      return;
+    }
+    
     setLoading(true);
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
-        navigation.navigate("HomeStack");
         setEmail("");
         setPassword("");
       })
-      .catch(() => {
-        setError("Senha ou Email inválidos");
+      .catch((error) => {
+        let errorMessage = "Senha ou Email inválidos";
+        switch (error.code) {
+          case 'auth/invalid-email':
+            errorMessage = "Email inválido";
+            break;
+          case 'auth/user-not-found':
+            errorMessage = "Usuário não encontrado";
+            break;
+          case 'auth/wrong-password':
+            errorMessage = "Senha incorreta";
+            break;
+          default:
+            errorMessage = "Erro desconhecido. Tente novamente.";
+        }
+        setError(errorMessage);
       })
       .finally(() => setLoading(false));
-  }
+  };
 
-  function handleCreateUser() {
+  const handleCreateUser = () => {
     navigation.navigate("CreateUser");
-  }
+  };
 
-  function handleForget() {
+  const handleForget = () => {
     setVisible(true);
-  }
+  };
 
   const hideModal = () => setVisible(false);
 
@@ -104,8 +114,8 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   logo: {
-    width: 300, 
-    height: 120, 
+    width: 300,
+    height: 120,
     alignSelf: "center",
     marginBottom: 24,
   },

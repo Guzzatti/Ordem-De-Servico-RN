@@ -6,6 +6,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 import { db } from "../firebaseConfig";
 import { setDoc, doc } from "firebase/firestore";
+import { Image } from "react-native";
 
 export default function CreateUser({ navigation }) {
   const [email, setEmail] = useState("");
@@ -31,9 +32,6 @@ export default function CreateUser({ navigation }) {
       await setDoc(doc(db, 'organization', user.uid), {
         userId: user.uid,
       });
-
-      alert("Usuário Criado Com Sucesso");
-      navigation.navigate("Home");
     } catch (error) {
       setError(error.message);
     } finally {
@@ -41,10 +39,12 @@ export default function CreateUser({ navigation }) {
     }
   }
 
+  const logo = require("../assets/logo.png");
+
   return (
     <View style={styles.container}>
-      <View style={{height:"10%",alignItems:"flex-end"}}>
-        <Button onPress={()=>{navigation.navigate("Login")}}>Voltar</Button>
+      <View style={styles.containerLogo}>
+        <Image source={logo} style={styles.logo} />
       </View>
       <Text style={styles.title}>Este é o primeiro passo para mudar o seu negócio!</Text>
       <TextInput
@@ -120,5 +120,13 @@ const styles = StyleSheet.create({
     color: "red",
     marginBottom: 15,
     textAlign: "center",
+  },
+  logo: {
+    width: 200,
+    height: 50,
+    marginBottom: 20,
+  },
+  containerLogo: {
+    alignItems: "center",
   },
 });
