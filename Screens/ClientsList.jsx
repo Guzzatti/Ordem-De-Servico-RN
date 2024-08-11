@@ -84,6 +84,18 @@ export default function ClientsList({ navigation }) {
     client.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  function formatCpf(value) {
+    value = value.replace(/\D/g, "");
+    if (value.length > 11) value = value.slice(0, 11);
+    return value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+  }
+
+  function formatTelefone(value) {
+    value = value.replace(/\D/g, "");
+    if (value.length > 11) value = value.slice(0, 11);
+    return value.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+  }
+
   return (
     <View style={styles.container}>
       <TextInput
@@ -139,6 +151,7 @@ export default function ClientsList({ navigation }) {
             label="CPF"
             value={clientCpf}
             onChangeText={setClientCpf}
+            onEndEditing={(e) => setClientCpf(formatCpf(e.nativeEvent.text))}
             style={styles.input}
             keyboardType="numeric"
             mode="outlined"
@@ -147,6 +160,9 @@ export default function ClientsList({ navigation }) {
             label="Telefone"
             value={clientPhone}
             onChangeText={setClientPhone}
+            onEndEditing={(e) =>
+              setClientPhone(formatTelefone(e.nativeEvent.text))
+            }
             style={styles.input}
             keyboardType="phone-pad"
             mode="outlined"

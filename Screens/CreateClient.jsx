@@ -34,7 +34,9 @@ export default function CreateClient({ navigation }) {
         navigation.navigate("Home");
       } catch (error) {
         console.error("Erro ao salvar o cliente:", error);
-        alert("Ocorreu um erro ao salvar o cliente. Por favor, tente novamente.");
+        alert(
+          "Ocorreu um erro ao salvar o cliente. Por favor, tente novamente."
+        );
       } finally {
         setLoading(false);
       }
@@ -43,6 +45,18 @@ export default function CreateClient({ navigation }) {
       setLoading(false);
     }
   };
+
+  function formatCpf(value) {
+    value = value.replace(/\D/g, "");
+    if (value.length > 11) value = value.slice(0, 11);
+    return value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+  }
+
+  function formatTelefone(value) {
+    value = value.replace(/\D/g, "");
+    if (value.length > 11) value = value.slice(0, 11);
+    return value.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+  }
 
   return (
     <View style={styles.container}>
@@ -59,6 +73,7 @@ export default function CreateClient({ navigation }) {
         mode="outlined"
         value={cpf}
         onChangeText={setCpf}
+        onEndEditing={(e) => setCpf(formatCpf(e.nativeEvent.text))}
         style={styles.input}
         keyboardType="numeric"
         theme={{ colors: { primary: "#00B9D1" } }}
@@ -68,6 +83,7 @@ export default function CreateClient({ navigation }) {
         mode="outlined"
         value={phone}
         onChangeText={setPhone}
+        onEndEditing={(e) => setPhone(formatTelefone(e.nativeEvent.text))}
         style={styles.input}
         keyboardType="phone-pad"
         theme={{ colors: { primary: "#00B9D1" } }}
@@ -89,7 +105,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: "#F5F5F5",
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   input: {
     marginBottom: 15,
