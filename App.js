@@ -16,7 +16,7 @@ import { auth } from "./firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "./firebaseConfig";
-import { ActivityIndicator, MD2Colors } from 'react-native-paper';
+import { ActivityIndicator, MD2Colors } from "react-native-paper";
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -28,8 +28,7 @@ function CustomDrawerContent(props) {
 
   const handleLogout = () => {
     signOut(auth)
-      .then(() => {
-      })
+      .then(() => {})
       .catch((error) => {
         console.error("Erro ao desconectar:", error);
         alert("Erro ao desconectar. Tente novamente.");
@@ -61,7 +60,11 @@ function CustomDrawerContent(props) {
         <Text style={styles.userEmail}>{email}</Text>
       </View>
       <View>
-        <Button mode="contained" onPress={handleLogout} style={styles.logoutButton}>
+        <Button
+          mode="contained"
+          onPress={handleLogout}
+          style={styles.logoutButton}
+        >
           Desconectar
         </Button>
       </View>
@@ -81,7 +84,9 @@ function CustomStackContent(props) {
 function HomeStack() {
   return (
     <Stack.Navigator
-      screenOptions={{ headerRight: (props) => <CustomStackContent {...props} /> }}
+      screenOptions={{
+        headerRight: (props) => <CustomStackContent {...props} />,
+      }}
     >
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="ListOS" component={ListOS} />
@@ -109,7 +114,7 @@ function App() {
   if (isLoggedIn === null) {
     const logo = require("./assets/logo.png");
     return (
-      <View style={{justifyContent:"center",alignItems:"center",flex:1}}>
+      <View style={{ justifyContent: "center", alignItems: "center", flex: 1 }}>
         <Image source={logo} style={{ width: 400, height: 200 }} />
         <ActivityIndicator size={"large"} animating={true} color={"#00B9D1"} />
       </View>
@@ -132,9 +137,7 @@ function App() {
             <Drawer.Screen name="HomeStack" component={HomeStack} />
           </Drawer.Navigator>
         ) : (
-          <Stack.Navigator
-            initialRouteName="Login"
-          >
+          <Stack.Navigator initialRouteName="Login">
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="CreateUser" component={CreateUser} />
           </Stack.Navigator>

@@ -165,7 +165,10 @@ export default function OSMODAL({
             mode="outlined"
             value={description}
             onChangeText={setDescription}
-            style={[styles.input, { height: 100 }]}
+            style={[styles.input, { height: 100, textAlignVertical: "top" }]}
+            multiline={true}
+            numberOfLines={4}
+            ellipsizeMode="tail"
           />
           <TouchableOpacity
             style={styles.clientSelector}
@@ -177,8 +180,10 @@ export default function OSMODAL({
                 : "Selecione um cliente"}
             </Text>
           </TouchableOpacity>
-          <View style={{paddingTop:10,paddingBottom:10}}>
-            <Text style={styles.statusLabel}>Contato: {clients.find((c) => c.id === client)?.phone}</Text>
+          <View style={{ paddingTop: 10, paddingBottom: 10 }}>
+            <Text style={styles.statusLabel}>
+              Contato: {clients.find((c) => c.id === client)?.phone}
+            </Text>
           </View>
           <View style={styles.statusContainer}>
             <Text style={styles.statusLabel}>Status:</Text>
