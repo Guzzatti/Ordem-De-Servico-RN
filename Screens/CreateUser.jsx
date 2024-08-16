@@ -12,7 +12,7 @@ export default function CreateUser({ navigation }) {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassWord,setConfirmPassWord] = useState("");
+  const [confirmPassWord, setConfirmPassWord] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -22,14 +22,18 @@ export default function CreateUser({ navigation }) {
       if (password !== confirmPassWord) {
         throw new Error("As senhas não coincidem");
       }
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential.user;
 
-      await setDoc(doc(db, 'users', user.uid), {
+      await setDoc(doc(db, "users", user.uid), {
         email: user.email,
         name: name,
       });
-      await setDoc(doc(db, 'organization', user.uid), {
+      await setDoc(doc(db, "organization", user.uid), {
         userId: user.uid,
       });
     } catch (error) {
@@ -46,7 +50,9 @@ export default function CreateUser({ navigation }) {
       <View style={styles.containerLogo}>
         <Image source={logo} style={styles.logo} />
       </View>
-      <Text style={styles.title}>Este é o primeiro passo para mudar o seu negócio!</Text>
+      <Text style={styles.title}>
+        Este é o primeiro passo para mudar o seu negócio!
+      </Text>
       <TextInput
         mode="outlined"
         value={name}
@@ -100,7 +106,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F5F5F5",
     padding: 24,
-    gap:20,
+    gap: 20,
   },
   title: {
     fontSize: 26,

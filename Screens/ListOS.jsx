@@ -1,9 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FlatList, StyleSheet, View, Text, TextInput, Animated } from "react-native";
+import {
+  FlatList,
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  Animated,
+} from "react-native";
 import { List, Button } from "react-native-paper";
 import OSMODAL from "./OSModal";
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
-import { db, auth } from '../firebaseConfig';
+import { db, auth } from "../firebaseConfig";
 
 export default function ListOS() {
   const [data, setData] = useState([]);
@@ -24,7 +31,7 @@ export default function ListOS() {
       const clientsRef = collection(db, "organization", user.uid, "clients");
       const querySnapshot = await getDocs(clientsRef);
 
-      const clientsList = querySnapshot.docs.map(doc => ({
+      const clientsList = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
@@ -46,13 +53,20 @@ export default function ListOS() {
         throw new Error("Usuário não autenticado");
       }
 
-      const ordersRef = collection(db, "organization", user.uid, "serviceOrders");
+      const ordersRef = collection(
+        db,
+        "organization",
+        user.uid,
+        "serviceOrders"
+      );
       const querySnapshot = await getDocs(ordersRef);
 
-      const orders = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      })).filter(order => order.status === statusFilter);
+      const orders = querySnapshot.docs
+        .map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+        .filter((order) => order.status === statusFilter);
 
       // Ordena as ordens com base no status
       const sortedOrders = orders.sort((a, b) => {
@@ -92,7 +106,7 @@ export default function ListOS() {
 
       const osRef = doc(db, "organization", user.uid, "serviceOrders", id);
       await updateDoc(osRef, { status: newStatus });
-      fetchData(); 
+      fetchData();
     } catch (error) {
       console.error("Erro ao atualizar ordem de serviço: ", error);
     }
@@ -110,16 +124,16 @@ export default function ListOS() {
 
   const formatDate = (date) => {
     if (!date) return "Data não disponível";
-    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    const options = { year: "numeric", month: "short", day: "numeric" };
     return new Date(date.seconds * 1000).toLocaleDateString(undefined, options);
   };
 
   const getClientName = (clientId) => {
-    const client = clients.find(c => c.id === clientId);
+    const client = clients.find((c) => c.id === clientId);
     return client ? client.name : "Nome não disponível";
   };
 
-  const filteredData = data.filter(item => 
+  const filteredData = data.filter((item) =>
     getClientName(item.client).toLowerCase().includes(searchText.toLowerCase())
   );
 
@@ -163,22 +177,31 @@ export default function ListOS() {
               description={
                 <View>
                   <View style={styles.descriptionContainer}>
-                    <Text style={styles.clientText}>{getClientName(item.client)}</Text>
+                    <Text style={styles.clientText}>
+                      {getClientName(item.client)}
+                    </Text>
                   </View>
                   <View>
                     <Text style={styles.dateText}>
-                      {item.createdAt ? formatDate(item.createdAt) : "Data não disponível"}
+                      {item.createdAt
+                        ? formatDate(item.createdAt)
+                        : "Data não disponível"}
                     </Text>
                   </View>
                 </View>
               }
               onPress={() => showModal(item)}
-              left={props => <List.Icon {...props} icon="archive" />}
-              right={props => (
+              left={(props) => <List.Icon {...props} icon="archive" />}
+              right={(props) => (
                 <View>
                   <Button
                     mode="contained"
-                    onPress={() => updateStatus(item.id, item.status === "Pendente" ? "Finalizada" : "Pendente")}
+                    onPress={() =>
+                      updateStatus(
+                        item.id,
+                        item.status === "Pendente" ? "Finalizada" : "Pendente"
+                      )
+                    }
                     style={styles.updateButton}
                   >
                     {item.status === "Pendente" ? "Finalizar" : "Reabrir"}
@@ -193,7 +216,11 @@ export default function ListOS() {
         opacity={fadeAnim} // Aplica a animação de fade
       />
       <View style={styles.buttonContainer}>
-        <Button mode="contained" onPress={() => showModal()} style={styles.addButton}>
+        <Button
+          mode="contained"
+          onPress={() => showModal()}
+          style={styles.addButton}
+        >
           Adicionar OS
         </Button>
       </View>
@@ -213,11 +240,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 5,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   navContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     marginBottom: 15,
   },
   navButton: {

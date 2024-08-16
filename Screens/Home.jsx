@@ -32,10 +32,18 @@ export default function Home({ navigation }) {
         <Button mode="contained" onPress={handleListOs} style={styles.button}>
           Ordens de Serviço
         </Button>
-        <Button mode="contained" onPress={handleCreateClient} style={styles.button}>
+        <Button
+          mode="contained"
+          onPress={handleCreateClient}
+          style={styles.button}
+        >
           Registrar Novo Cliente
         </Button>
-        <Button mode="contained" onPress={handleListClients} style={styles.button}>
+        <Button
+          mode="contained"
+          onPress={handleListClients}
+          style={styles.button}
+        >
           Lista de Clientes
         </Button>
       </View>
@@ -52,8 +60,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   logo: {
-    width: 200, 
-    height: 50, 
+    width: 200,
+    height: 50,
     marginBottom: 20,
   },
   buttonContainer: {

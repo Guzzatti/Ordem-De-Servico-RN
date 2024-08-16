@@ -13,13 +13,12 @@ export default function Login({ navigation }) {
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
-
   const handleLogin = () => {
     if (!email || !password) {
       setError("Por favor, preencha todos os campos.");
       return;
     }
-    
+
     setLoading(true);
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
@@ -29,13 +28,13 @@ export default function Login({ navigation }) {
       .catch((error) => {
         let errorMessage = "Senha ou Email inválidos";
         switch (error.code) {
-          case 'auth/invalid-email':
+          case "auth/invalid-email":
             errorMessage = "Email inválido";
             break;
-          case 'auth/user-not-found':
+          case "auth/user-not-found":
             errorMessage = "Usuário não encontrado";
             break;
-          case 'auth/wrong-password':
+          case "auth/wrong-password":
             errorMessage = "Senha incorreta";
             break;
           default:
@@ -88,7 +87,11 @@ export default function Login({ navigation }) {
         Login
       </Button>
       <View style={styles.clientContainer}>
-        <Button mode="text" onPress={handleCreateUser} style={styles.textButton}>
+        <Button
+          mode="text"
+          onPress={handleCreateUser}
+          style={styles.textButton}
+        >
           Criar Conta
         </Button>
         <Button mode="text" onPress={handleForget} style={styles.textButton}>

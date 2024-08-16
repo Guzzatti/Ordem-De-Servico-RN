@@ -7,7 +7,6 @@ import { auth } from "../firebaseConfig";
 
 export default function CreateClient({ navigation }) {
   const [name, setName] = useState("");
-  const [cpf, setCpf] = useState("");
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -15,18 +14,16 @@ export default function CreateClient({ navigation }) {
 
   const handleSave = async () => {
     setLoading(true);
-
     if (!user) {
       setLoading(false);
       alert("Usuário não autenticado. Por favor, faça login novamente.");
       return;
     }
 
-    if (name && cpf && phone) {
+    if (name && phone) {
       try {
         await addDoc(collection(db, "organization", user.uid, "clients"), {
           name: name,
-          cpf: cpf,
           phone: phone,
           createdAt: new Date(),
         });
@@ -46,12 +43,6 @@ export default function CreateClient({ navigation }) {
     }
   };
 
-  function formatCpf(value) {
-    value = value.replace(/\D/g, "");
-    if (value.length > 11) value = value.slice(0, 11);
-    return value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-  }
-
   function formatTelefone(value) {
     value = value.replace(/\D/g, "");
     if (value.length > 11) value = value.slice(0, 11);
@@ -66,16 +57,6 @@ export default function CreateClient({ navigation }) {
         value={name}
         onChangeText={setName}
         style={styles.input}
-        theme={{ colors: { primary: "#00B9D1" } }}
-      />
-      <TextInput
-        label="CPF"
-        mode="outlined"
-        value={cpf}
-        onChangeText={setCpf}
-        onEndEditing={(e) => setCpf(formatCpf(e.nativeEvent.text))}
-        style={styles.input}
-        keyboardType="numeric"
         theme={{ colors: { primary: "#00B9D1" } }}
       />
       <TextInput
